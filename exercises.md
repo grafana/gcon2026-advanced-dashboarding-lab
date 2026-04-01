@@ -105,41 +105,24 @@
 1. To add a variable, click the **Add new element** button → Dashboard controls > **Variable** → select a type for it.
 
 2. **Add the `cluster` variable**
-  - **Name:** `cluster`
-  - **Type:** Query
+  - **Name:** `cluster`. **Type:** Query
   - Click **Open variable editor**
-  - **Data source:** `grafanacloud-<...>-prom`
-  - **Query type:** Label values
-  - **Label:** k8s_cluster_name
+  ![image info](./cluster.png)
   - Click **Preview** then **Close**.
-  - **Multi-value:** Off
-  - **Include All option:** Off
-  - **Allow custom value:** Off
 
 3. **Add the `region` variable**
-  - **Name:** `region`
-  - **Type:** Query
+  - **Name:** `region`. **Type:** Query
   - Click **Open variable editor**
-  - **Data source:**  `grafanacloud-<...>-prom`
-  - **Query type:** Label values
-  - **Label:** cloud_region
-  - **Label filters:** k8s_cluster_name = $cluster
+  ![image info](./region.png)
   - Click **Preview** then **Close**.
-  - **Multi-value:** Off
-  - **Include All option:** Off
-  - **Allow custom value:** Off
 
 4. **Add the `service` variable**
-  - **Name:** `service`
-  - **Type:** Query
-  - **Data source:** `grafanacloud-<...>-prom`
-  - **Query type:** Label values
-  - **Label:** container
+  - **Name:** `service`. **Type:** Query
+  ![image info](./service.png)
   - **Stream selector:** `{cluster="$cluster", namespace="$namespace"}`
   - Click **Preview** then **Close**.
   - **Multi-value:** On
-  - **Allow all:** On
-  - **Allow custom value:** Off
+  ![image info](./multi.png)
   
 5. **Add the `show_business_metrics` variable (toggle)**
   - **Name:** `show_business_metrics`

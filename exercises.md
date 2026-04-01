@@ -116,13 +116,13 @@
   - **Include All option:** Off
   - **Allow custom value:** Off
 
-3. **Add the `namespace` variable**
-  - **Name:** `namespace`
+3. **Add the `region` variable**
+  - **Name:** `region`
   - **Type:** Query
   - Click **Open variable editor**
   - **Data source:**  `grafanacloud-<...>-prom`
   - **Query type:** Label values
-  - **Label:** k8s_namespace_name
+  - **Label:** cloud_region
   - **Label filters:** k8s_cluster_name = $cluster
   - Click **Preview** then **Close**.
   - **Multi-value:** Off
@@ -148,16 +148,16 @@
   - **Label:** Include business metrics
   - Click **Apply**.
 
-6. **Wire up your Fleet Overview panels**
+6. **Wire up your panels**
   - In the **Fleet Overview** tab.
     - Edit the queries with:
       ```promql
-      {k8s_namespace_name="$namespace",k8s_cluster_name="$cluster"}
+      {cloud_region="$region",k8s_cluster_name="$cluster"}
       ```
   - In the **Logs** tab, logs panel,
     - Edit the logs query with:
       ``` logql
-      {container=~"$service", cluster="$cluster", namespace="$namespace"}
+      {container=~"$service", cluster="$cluster", cloud_region=~"$region"}
       ```
     - Notice how the logs get filtered
     - In the panel repeat options
@@ -188,72 +188,52 @@
   - **Type:** Ad Hoc Filters
   - **Data source:** `grafanacloud-prom`
   - Click **Apply**.
-2. **Test it**
-  - Back on the dashboard, you'll see a filter bar.
-  - Click **+ Add filter**, select a label (e.g. `service_name`), set a value.
-  - Watch all Prometheus-backed panels filter in unison.
-  - Stack a second filter (e.g. `span_name = HTTP GET`).
-  - Remove the filters to return to the full view.
+
+2. In the **Fleet Overview** tab.
+  - Group all 3 panels into a **row** and call it **From variables**
+  - Duplicate the row, call it **Filters only** 
+    - remove all the references to template variables in their queries
+  - Select a single value for the cluster & region query variables.
+    - Notice how the 2 rows do not show the same numbers. 
+  - Now set up the new filter variable to reflect what you selected in the query variables.
+    - Notice how now the data is the same
+
+3. **Use filters only**
+  - Remove the 2 query variables for cluster & region
+  - Delete the row that references them
+  - To tidy up, you can also use **Ungroup rows** to remove the single row in your tab.
+
 
 ### Part B — Show/Hide Rules
 
-1. **Add a Postgres Saturation panel on Fleet Overview**
-  - Add a new panel to **Fleet Overview**.
-  - Title: **Postgres — Active Connections**
-  - Query (Prometheus):
-    ```promql
-    sum(pg_stat_database_numbackends)
-    ```
-  - Visualization: **Stat** or **Gauge**.
-2. **Set a show/hide rule on it**
-  - With the panel selected, open the **Show/Hide** (conditional visibility) settings.
-  - Add a condition:
-    - **Variable:** `service_name`
-    - **Operator:** `equals`
-    - **Value:** `checkoutservice`
-  - Add a second condition (OR):
-    - **Variable:** `service_name`
-    - **Operator:** `equals`
-    - **Value:** `cartservice`
-  - Combine with **OR** logic.
-  - The panel should only appear when a DB-backed service is selected.
-3. **Add a show/hide rule for the Business Metrics tab**
+1. **Add a show/hide rule for the Business Metrics tab**
   - Select the **Business Metrics** tab.
-  - Add a condition:
+  - Add a show/hide rule:
     - **Variable:** `include_business`
     - **Operator:** `equals`
     - **Value:** `true`
   - The entire tab is now hidden unless the toggle is on.
-4. **Test your rules**
-  - Set `service_name` to `frontend` → the Postgres panel should disappear.
-  - Set `service_name` to `checkoutservice` → the Postgres panel should appear.
+2. **Test your rules**
+
   - Toggle `include_business` off → the Business Metrics tab should hide.
 
 ### Part C — Section-Level Variables
 
-1. **Move `span_name` to the Service Deep Dive tab**
-  - If you haven't created the `span_name` variable yet, add it:
-    - **Name:** `span_name`
-    - **Type:** Query
-    - **Data source:** `grafanacloud-prom`
-    - **Query:**
-      ```promql
-      label_values(traces_spanmetrics_calls_total{service_name="$service_name"}, span_name)
-      ```
-  - In the variable settings, set its **scope** to the **Service Deep Dive** tab (section-level variable).
-  - This variable will only appear when the user is on Tab 2.
+1. **Move `service` to the Logs tab**
+  - It's only used there - let's declutter the top level
+
 2. **Add `time_window` as a section variable on Business Metrics**
   - **Name:** `time_window`
   - **Type:** Custom
   - **Values:** `1h,6h,1d`
-  - Set its **scope** to the **Business Metrics** tab.
-3. **Save.**
 
-> **Checkpoint:** Filters apply dashboard-wide. Postgres panels appear only for DB-backed services. `span_name` only shows on Tab 2. `time_window` only shows on Tab 3.
+3. **Save.** the dashboard
+
+> **Checkpoint:** Filters apply dashboard-wide and replace query variables. A business tab is shown unless we toggle a switch variable, some tabs have section level variables.
 
 ---
 
-## Task 5 — Field Overrides
+## Task 4 — Field Overrides
 
 **Goal:** Make panels visually self-explanatory by styling individual series differently.
 
@@ -347,7 +327,7 @@
 
 ---
 
-## Task 6 — Data Links
+## Task 5 — Data Links
 
 **Goal:** Wire panels together so clicking a data point takes you to the right context instantly.
 
@@ -416,7 +396,7 @@
 
 ---
 
-## Task 7 — Saved Queries
+## Task 6 — Saved Queries
 
 **Goal:** Extract a commonly-used query into the shared query library so anyone on the team can reuse it.
 
@@ -447,7 +427,7 @@
 
 ---
 
-## Task 8 — SQL Expressions
+## Task 7 — SQL Expressions
 
 **Goal:** Use SQL Expressions to combine data from multiple queries into a single table — no extra transformations needed.
 
@@ -513,7 +493,7 @@
 
 ---
 
-## Task 9 — Dashboard Datasource
+## Task 8 — Dashboard Datasource
 
 **Goal:** Reuse data already fetched by one panel as the source for another — zero duplicate queries.
 
@@ -562,7 +542,7 @@
 
 ---
 
-## Task 10 — Putting It All Together
+## Task 9 — Putting It All Together
 
 **Goal:** Take a step back and verify the end-to-end flow.
 

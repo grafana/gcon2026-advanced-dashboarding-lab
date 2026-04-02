@@ -222,32 +222,44 @@
 
 **Features practised:** Field overrides by name, by regex, colour and line style
 
-### Part A — Error Breakdown by Status Code
+### Part A — Orders vs Sessions (Business Metrics)
 
-1. **Create the error breakdown panel on Tab 2 (Service Deep Dive)**
-  - Add a new panel. Title: **Errors by HTTP Status Code**.
-  - Visualization: **Bar chart** (or Time series).
-  - Query (Prometheus):
-    ```promql
-    sum by (status_code) (
-      rate(traces_spanmetrics_calls_total{
-        k8s_namespace_name="$namespace",
-        service_name="$service_name"
-      }[2m])
-    )
-    ```
-2. **Add field overrides for status code colours**
-  - Go to the **Overrides** tab in the panel editor.
-  - **Override 1:**
-    - **Match:** Fields with name matching regex `2.`* (or the specific legend value for 2xx)
-    - **Property → Color:** Green (`#73BF69`)
-  - **Override 2:**
-    - **Match:** Fields with name matching regex `4.`*
-    - **Property → Color:** Orange (`#FF9830`)
-  - **Override 3:**
-    - **Match:** Fields with name matching regex `5.`* (or `STATUS_CODE_ERROR`)
-    - **Property → Color:** Red (`#F2495C`)
-  - Click **Apply**.
+1. **Navigate to Tab 3 — Business Metrics**
+   - Make sure `include_business` is set to `true` so the tab is visible.
+
+2. **Create the panel**
+   - Add a new panel. Title: **Orders vs Sessions**.
+   - Visualization: **Time series**.
+   - **Query A — Orders:** Loki
+     ```logql
+     sum(count_over_time({job=~"ditl-demo-prod/checkoutservice.+"} |= "order placed successfully"[$__range]))
+     ```
+     - Options Legend: `Orders`
+   - **Query B — Sessions:** Prometheus
+     ```promql
+     sum(UniqueSessionCount{action_name="view-products"})
+     ```
+     - Options Legend: `Sessions`
+
+  ![image info](./sessions_orders.png)
+
+3. **Add field overrides to differentiate the two series**
+   - Go to the **Overrides** tab in the panel editor.
+   - **Override 1 — Orders (Query A):**
+     - **Match:** Fields returned by query **A**
+     - **Color:** Green (`#73BF69`)
+     - **Line style:** Solid
+     - **Axis:** Left Y
+   - **Override 2 — Sessions (Query B):**
+     - **Match:** Fields returned by query **B**
+     - **Color:** Purple (`#8F3BB8`)
+     - **Line style:** Dashed
+     - **Axis placement:** Right Y
+   - Click **Apply**.
+
+4. **Verify**
+   - You should see two series on the same chart: Orders as a solid green line on the left axis, Sessions as a dashed purple line on the right axis.
+   - The dual-axis layout lets you compare trends even when the absolute values are on different scales.
 
 ### Part B — Latency Percentile Lines
 
@@ -306,7 +318,7 @@
     - **Line style:** Dashed
 3. **Save.**
 
-> **Checkpoint:** Status code bars are colour-coded green/orange/red. Latency lines are visually distinct by percentile — p99 is a red dashed line.
+> **Checkpoint:** The Orders vs Sessions panel shows two series on separate axes with distinct colours and line styles. Latency lines are visually distinct by percentile — p99 is a red dashed line.
 
 ---
 

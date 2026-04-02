@@ -222,6 +222,8 @@
 
 **Features practised:** Field overrides by name, by regex, colour and line style
 
+There are 2 exercises in that section, you can do both or pick one of them.
+
 ### Part A — Orders vs Sessions (Business Metrics)
 
 1. **Navigate to Tab 3 — Business Metrics**
@@ -261,64 +263,35 @@
    - You should see two series on the same chart: Orders as a solid green line on the left axis, Sessions as a dashed purple line on the right axis.
    - The dual-axis layout lets you compare trends even when the absolute values are on different scales.
 
-### Part B — Latency Percentile Lines
+### Part B — HTTP status code
 
-1. **Create the latency timeseries panel on Tab 2**
-  - Add a new panel. Title: **Latency by Endpoint**.
-  - Visualization: **Time series**.
-  - Add three queries:
-    - **Query A — p50:**
-      ```promql
-      histogram_quantile(0.50,
-        sum by (span_name, le) (
-          rate(traces_spanmetrics_latency_bucket{
-            service_name="$service_name",
-            k8s_namespace_name="$namespace"
-          }[2m])
-        )
-      )
-      ```
-      Legend: `p50 — {{span_name}}`
-    - **Query B — p95:**
-      ```promql
-      histogram_quantile(0.95,
-        sum by (span_name, le) (
-          rate(traces_spanmetrics_latency_bucket{
-            service_name="$service_name",
-            k8s_namespace_name="$namespace"
-          }[2m])
-        )
-      )
-      ```
-      Legend: `p95 — {{span_name}}`
-    - **Query C — p99:**
-      ```promql
-      histogram_quantile(0.99,
-        sum by (span_name, le) (
-          rate(traces_spanmetrics_latency_bucket{
-            service_name="$service_name",
-            k8s_namespace_name="$namespace"
-          }[2m])
-        )
-      )
-      ```
-      Legend: `p99 — {{span_name}}`
-2. **Add field overrides for each percentile**
-  - **Override 1 — p50 series:**
-    - **Match:** Fields returned by query **A**
-    - **Color:** Green (`#73BF69`)
-    - **Line style:** Solid
-  - **Override 2 — p95 series:**
-    - **Match:** Fields returned by query **B**
-    - **Color:** Orange (`#FF9830`)
-    - **Line style:** Solid
-  - **Override 3 — p99 series:**
-    - **Match:** Fields returned by query **C**
-    - **Color:** Red (`#F2495C`)
-    - **Line style:** Dashed
-3. **Save.**
+1. On the **Service Deep Dive** tab, add a new panel:
+   - Data source: `grafanacloud-prom`
+   - **Query** :
+     ```promql
+     sum by (http_status_code) (rate(traces_spanmetrics_calls_total{}[$__rate_interval]))
+     )
+     ```
+   - Visualization: **Time series** or **Bar chart**.
+   - Title: `HTTP Status Code`.
 
-> **Checkpoint:** The Orders vs Sessions panel shows two series on separate axes with distinct colours and line styles. Latency lines are visually distinct by percentile — p99 is a red dashed line.
+2. Open the **Overrides** section in the panel options.
+
+3. **Override 1 — make 2xx green:**
+   - Click **Add field override** → **Fields with name matching regex**: `2[0-9][0-9]`
+   - Add property: **Standard options > Color scheme** → **Fixed color** → Green.
+
+4. **Override 2 — make 4xx orange:**
+   - Click **Add field override** → **Fields with name matching regex**: `4[0-9][0-9]`
+   - Add property: **Standard options > Color scheme** → **Fixed color** → Orange.
+
+4. **Override 2 — make 5xx red:**
+   - Click **Add field override** → **Fields with name matching regex**: `5[0-9][0-9]`
+   - Add property: **Standard options > Color scheme** → **Fixed color** → Red.
+
+6. **Save** the panel. 
+
+> **Checkpoint:** Confirm that 2xx bars/lines are green and 5xx are red in the visualization.
 
 ---
 

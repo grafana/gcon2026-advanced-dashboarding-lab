@@ -419,7 +419,7 @@ Make the labels display as pills.
 
 **Goal:** Use transformations to improve on the Githu issues table
 
-**Features practised:** Transformations - filter, organise, calculations, convert
+**Features practised:** Transformations - filter, organise, calculate, convert
 
 Steps
 
@@ -435,15 +435,16 @@ Steps
 
 ![Solution for transformations](./img/transformations.png)
 
-**Bonus task / Challenge**
+### Bonus task / Challenge
 You're done early? 
+ - duplicate the panels and name the copy **Closed bugs**
  - filter the table for bugs only
   <details>
   <summary>View solution</summary>
   ![Filter for bugs: labels containing `type/bug` substring](./img/filter-bugs.png)
   </details>
 
- - switch to only showing closed issues and calculate the time the issue stayed open
+ - switch to only showing closed issues and calculate the time the issue was open for
   <details>
   <summary>View solution</summary>
   Do not forget an override to change the unit to **days**
@@ -462,47 +463,117 @@ You're done early?
 
 Steps
 
+### Part A — Replace Task 7 transformations with SQL
+
+Duplicate the panel from Task 7 and replace all transformations with a single SQL expression.
+
+- Remove all transformations (or hide them with eye icon) 
+- Add a new query **B** → type **SQL Expression**
+- Hide query **A** from the visualization (eye icon)
+- Enter the following SQL:
+
+```sql
+SELECT
+  title,
+  author,
+  DATE_FORMAT(from_unixtime(created_at / 1000), '%Y-%m-%d %H:%i:%s') AS `created at`,
+  labels
+FROM A
+WHERE closed = false
+```
+
+> **Checkpoint:** The table shows only open issues with a human-readable date, same as before — no transformation steps needed.
 
 ---
 
-## Task 9 — Improving performance
+### Part B — JOIN: Bug vs Feature ratio per repo
 
+**Goal:** Use subqueries and a JOIN inside a single SQL expression to compare bug and feature request volume across repos.
 
+1. **Add a new panel on the Bugs tab**
+   - Title: **Bug vs Feature Requests by Repository**
+   - Visualization: **Table**
+   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
 
+2. **Add a SQL Expression** (Query B)
+   - Hide query A from the visualization
+   - Enter:
 
+```sql
+SELECT
+  bugs.repo as repository,
+  bugs.bug_count,
+  features.feature_count,
+  ROUND(bugs.bug_count * 100.0 / (bugs.bug_count + features.feature_count), 1) AS bug_pct
+FROM
+  (SELECT repo, COUNT(*) AS bug_count
+   FROM A
+   WHERE labels LIKE '%type/bug%'
+   GROUP BY repo) bugs
+JOIN
+  (SELECT repo, COUNT(*) AS feature_count
+   FROM A
+   WHERE labels LIKE '%type/feature-request%'
+   GROUP BY repo) features
+ON bugs.repo = features.repo
+ORDER BY bug_pct DESC
+```
+
+3. **Add a unit override on `bug_pct`**
+   - Match: **Fields with name** `bug_pct`
+   - Add property: **Standard options > Unit** → **Percent (0-100)**
+
+4. **Save** the panel.
+
+> **Checkpoint:** The table shows each repo with its raw bug and feature request counts, plus a percentage showing what share of labelled issues are bugs. `grafana/scenes` and `grafana/grafana` should both appear.
 
 ---
 
-## Task 10 — Putting It All Together
+### Bonus task / Challenge: Window functions: Contributor leaderboard
+You're done early? 
 
-**Goal:** Take a step back and verify the end-to-end flow.
+**Goal:** Use `RANK()` and `SUM() OVER ()` to build a ranked leaderboard - Who are the top 3 OSS contributors and what percentage of the repo have they contributed to?
 
-Verification Scenarios
+<details>
+<summary>View solution</summary>
 
-**Scenario 1 — Alex (SRE on-call)**
+1. **Add a new panel on the Bugs tab**
+   - Title: **Top Issue Reporters**
+   - Visualization: **Table**
+   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
 
-1. Open the dashboard. Land on **Fleet Overview**.
-2. Spot a service card with a high error rate (red stat).
-3. Click the service card → you're taken to **Tab 2 (Service Deep Dive)**, pre-filtered.
-4. Check the latency timeseries — the p99 red dashed line is spiking.
-5. Open the **Top 10 Slowest Spans** table. Click a span → Loki logs open with the right filters.
-6. If the service is DB-backed, click **Investigate database →** to jump to **Tab 4**.
+2. **Add a SQL Expression** (Query B), hide query A:
 
-**Scenario 2 — Priya (Service Owner)**
+```sql
+SELECT
+  RANK() OVER (ORDER BY issues_reported DESC) AS `rank`,
+  author,
+  issues_reported,
+  ROUND(issues_reported * 100.0 / SUM(issues_reported) OVER (), 1) AS percentage
+FROM (
+  SELECT author, COUNT(*) AS issues_reported
+  FROM A
+  WHERE 
+    closed = false 
+    AND author IS NOT NULL
+  GROUP BY author
+) sub
+ORDER BY issues_reported DESC
+LIMIT 10
+```
 
-1. From **Fleet Overview**, use the ad-hoc filter to scope to `service_name = checkoutservice`.
-2. The Postgres panel appears on Tab 1.
-3. Navigate to **Tab 2**. The `span_name` dropdown appears (section variable).
-4. Drill into a specific endpoint.
-5. Jump to **Tab 4** — see DB QPS correlated with service RPS.
+3. **Add overrides to style the leaderboard**
+   - **`rank` column:** Cell type → **Colored text**, thresholds: gold (212,175,55) < 2, silver (192,192,192) 2, bronze (205,127,50) 3, transparent otherwise. 
+     - Pro tip: enable **Apply to entire row**
+   - **`percentage` column:** Unit → **Percent (0–100)**
 
-**Scenario 3 — Jordan (Engineering Manager)**
+4. **Save** the dashboard.
 
-1. Set `include_business` to `true`.
-2. Open **Tab 3 — Business Metrics**.
-3. Use the `time_window` dropdown to compare 1h, 6h, and 1d windows.
-4. Check the **Service Risk Ranking** table — built with SQL Expressions.
-5. Spot the highest-risk service and share the dashboard link with the team.
+</details>
+
+
+> **Checkpoint:** The leaderboard shows the top 10 contributors ranked by open issues filed, with each person's share of the total. `RANK()` and `SUM() OVER ()` are doing work that would require multiple transformation steps — and even then couldn't produce a true rank column.
+
 
 
 
@@ -519,6 +590,6 @@ You've built a single, context-aware dashboard that:
 - Wires investigation paths with **data links**
 - Standardises queries with the **saved query library**
 - Combines data with **SQL Expressions**
-- Eliminates duplicate queries with the **Dashboard datasource**
+
 
 **One dashboard. Every persona. Every scenario. From alert to root cause in 90 seconds.**

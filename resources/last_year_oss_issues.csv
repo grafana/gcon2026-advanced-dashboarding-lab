@@ -999,3 +999,18 @@ Product Area: Azure Magaged Grafana users remain after being removed from IAM in
 Explore : Improve prometheus request performance,Reyarc,,grafana/grafana,109973,false,1755787539000,,1755845367000,"[""type/feature-request"",""type/performance"",""datasource/Prometheus"",""area/explore"",""automated-triage""]",[]
 Changes in dashboard variable behavior from Grafana 10 to 11 and 12,fsbrito-dev,,grafana/grafana,109967,false,1755781513000,,1764617650000,"[""type/regression"",""automated-triage"",""area/dashboard/variable""]",[]
 Dashboards: Option Sections and editors collapsed and recreates on every option change,vitPinchuk,,grafana/grafana,109963,true,1755776273000,1756382521000,1756382539000,"[""type/bug"",""type/regression"",""team/grafana-dashboards"",""area/dashboards/panel"",""area/dashboard/edit"",""automated-triage""]",[]
+"Build warnings due to missing defaultOptions export in @grafana/schema@12.4.0 used with @grafana/scenes@7.1.7","slaughtlaught","","grafana/scenes",1401,false,1773878400000,,1773878400000,"[]",""
+"table panel builder: hideFrom viz doesn't work","LarsStegman","","grafana/scenes",1348,false,1770163200000,,1770163200000,"[]",""
+"Variables: Inconsistency in multi value variable interpolation + custom format","yesoreyeram","","grafana/scenes",1321,false,1766188800000,,1766188800000,"[""area/variables"",""type/bug""]",""
+"Update @grafana/... dependencies for scenes-react","mzo-work-account-1","","grafana/scenes",1309,false,1764720000000,,1764720000000,"[]",""
+"Fixed width refresh button incompatible with i18n","tskarhed","","grafana/scenes",1308,false,1764633600000,,1764633600000,"[]",""
+"Backspacing a partial filter removes part of the previous filter too","yvrhdn","","grafana/scenes",1301,false,1762905600000,,1762905600000,"[""type/bug""]",""
+"getExploreURL ignores appSubUrl","LinzerToertchen","","grafana/scenes",1273,false,1760486400000,,1760486400000,"[]",""
+"xyChart: not behaving like dashboard version / possible bugs","Zamuroy","","grafana/scenes",1246,false,1757980800000,,1757980800000,"[]",""
+"AdHocFilters: add simple text-based operators to OPERATORS","eskirk","","grafana/scenes",1187,false,1752105600000,,1752105600000,"[""type/accessibility"",""type/enhancement"",""type/feature-request"",""usecase/app-plugins""]",""
+"Scenes now causes double-rendering of all panels that rely on data.series to remain referentially consistent","leeoniya","","grafana/scenes",1367,true,1771891200000,1771977600000,1771977600000,"[]",""
+"Duplicated key after cloning","ifrost","","grafana/scenes",1363,true,1771372800000,1771804800000,1771804800000,"[""type/bug""]",""
+"t() was called before i18n was initialized when using SceneTimePicker","andness","","grafana/scenes",1322,true,1766361600000,1772064000000,1772064000000,"[]",""
+"AdHocFiltersCombobox: tab navigation in Grafana Drawer crashes browser","gtk-grafana","","grafana/scenes",1167,true,1750809600000,1758758400000,1758758400000,"[""type/bug""]",""
+"Some breaking changes in Scenes after Grafana 12","XiangFrank","","grafana/scenes",1141,true,1748908800000,1749686400000,1749686400000,"[]",""
+"Bug: ""#"" char in ad-hoc variables not working","gtk-grafana","","grafana/scenes",1138,true,1748390400000,1748476800000,1748476800000,"[""type/bug""]",""

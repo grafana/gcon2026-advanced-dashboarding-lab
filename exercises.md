@@ -400,38 +400,55 @@ Steps
 
 > **Checkpoint:** The Bugs tab has a table of open GitHub issues. The `number` and `repo` columns are hidden. Clicking any issue title opens the real GitHub issue in a new tab.
 
+**Bonus task**
+You're done early? 
+Make the labels display as pills.
+
+<details>
+<summary>View solution</summary>
+
+![Override for label column showing cell options > cell type as `pill`](./img/labels-as-pills.png)
+
+</details>
+
 
 
 ---
 
-## Task 7 — Saved Queries
+## Task 7 — Transformations
 
-**Goal:** Extract a commonly-used query into the shared query library so anyone on the team can reuse it.
+**Goal:** Use transformations to improve on the Githu issues table
 
-**Features practised:** Saved queries, query library
+**Features practised:** Transformations - filter, organise, calculations, convert
 
 Steps
 
-1. **Identify the query to save**
-  - You've been using the **p95 latency** query in multiple panels (Fleet Overview stat and Tab 2 timeseries):
-2. **Save it to the query library**
-  - Open any panel that uses this query (e.g. the P95 Latency stat on Tab 1).
-  - In the query editor, click the **three-dot menu** (⋮) next to the query → **Save to query library**.
-  - **Name:** `p95 Latency — All Services`
-  - **Description:** `95th percentile latency across all services in the selected namespace. Uses traces_spanmetrics_latency_bucket.`
-  - Click **Save**.
-3. **Reuse the saved query in a new panel**
-  - Go to **Tab 2 (Service Deep Dive)**.
-  - Add a new panel or edit an existing one.
-  - In the query editor, click **Saved queries** (or the library icon).
-  - Find **p95 Latency — All Services** and select it.
-  - The query is inserted automatically with the correct datasource and PromQL.
-4. **Verify**
-  - Both panels (the one on Tab 1 and the new one on Tab 2) now share the same underlying query definition.
-  - If the metric name ever changes, you update it once in the library.
-5. **Save.**
+1. **Filter data by value**
+  - Only show issues that are not closed
 
-> **Checkpoint:** The p95 latency query lives in the shared library. Any teammate building a new panel can find and reuse it.
+2. **Convert field type**
+  - Make times readable by converting them to `Time`
+
+3. **Organise fields by name**
+  - Hide `author_company`, `closed_at` and `assignees`
+  - Rename columns to be easier to read (remove underscores)
+
+![Solution for transformations](./img/transformations.png)
+
+**Bonus task / Challenge**
+You're done early? 
+ - filter the table for bugs only
+  <details>
+  <summary>View solution</summary>
+  ![Filter for bugs: labels containing `type/bug` substring](./img/filter-bugs.png)
+  </details>
+
+ - switch to only showing closed issues and calculate the time the issue stayed open
+  <details>
+  <summary>View solution</summary>
+  Do not forget an override to change the unit to **days**
+  ![Add field from calculation times 2, to get the milisecond between closed and open time, then to convert it to number of days](./img/calc_time_open.png)
+  </details>
 
 
 
@@ -441,68 +458,9 @@ Steps
 
 **Goal:** Use SQL Expressions to combine data from multiple queries into a single table — no extra transformations needed.
 
-**Features practised:** SQL Expression transformation, cross-query JOINs
+**Features practised:** Transformations, SQL Expressions, cross-query JOINs
 
 Steps
-
-### Part A — Service Risk Ranking Table (Tab 3)
-
-1. **Navigate to Tab 3 — Business Metrics** (make sure `include_business` is set to `true`).
-2. **Add a new panel**
-  - Title: **Service Risk Ranking**
-  - Visualization: **Table**
-3. **Add Query A — p95 latency per service (instant)**
-  ```promql
-   histogram_quantile(0.95,
-     sum by (service_name, le) (
-       rate(traces_spanmetrics_latency_bucket{k8s_namespace_name="$namespace"}[2m])
-     )
-   )
-  ```
-  - Set the query to **Instant** (not range).
-  - Set the legend / ref ID to **A**.
-4. **Add Query B — error budget burn rate per service (instant)**
-  ```promql
-   (1 - grafana_slo_success_rate_5m) / (1 - 0.999)
-  ```
-  - Set the query to **Instant**.
-  - Set the legend / ref ID to **B**.
-5. **Add a SQL Expression transformation**
-  - Go to the **Transform** tab.
-  - Click **Add transformation → SQL Expression**.
-  - Enter the following SQL:
-    ```sql
-    SELECT
-      A.service_name,
-      A.Value AS p95_latency,
-      B.Value AS burn_rate,
-      A.Value * B.Value AS risk_score
-    FROM A
-    JOIN B ON A.service_name = B.service_name
-    ORDER BY risk_score DESC
-    ```
-6. **Style the table**
-  - Add a field override on `risk_score`:
-    - **Color mode:** Continuous (green → yellow → red)
-    - **Thresholds:** green < 1, yellow 1–5, red > 5
-7. **Save.**
-
-### Part B — Rolling Average Time Series
-
-1. **Add a new panel on Tab 3 (or Tab 2)**
-  - Title: **CPU Usage — Rolling Average**
-  - Visualization: **Time series**
-2. **Add a base query**
-  - Use your CPU metric query as Query A (range query).
-3. **Add a SQL Expression transformation**
-  ```sql
-   SELECT *, AVG(Value) OVER (ORDER BY Time ROWS BETWEEN 9 PRECEDING AND CURRENT ROW) AS rolling_avg
-   FROM A
-  ```
-4. **Save.**
-
-> **Checkpoint:** The risk ranking table on Tab 3 combines latency and burn rate data from two separate queries using a SQL JOIN. The rolling average demonstrates window functions.
-
 
 
 ---

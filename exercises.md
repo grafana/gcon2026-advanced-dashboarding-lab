@@ -351,80 +351,60 @@ Steps
 
 ---
 
-## Task 5 — Data Links
+## Task 6 — Data Links
 
-**Goal:** Wire panels together so clicking a data point takes you to the right context instantly.
+**Goal:** Wire panels so clicking a data point takes you to the right context instantly — starting with a GitHub Issues tracker built from a CSV.
 
 **Features practised:** Field data links, dynamic link variables
 
 Steps
 
-### Part A — Slow Spans Table → Loki Logs
+0. If you do not have one provisionned - add a **TestData** datasource in your instance
 
-1. **Create the "Top 10 Slowest Spans" table on Deep Dive Tab**
-  - Add a new panel. Title: **Top 10 Slowest Spans**.
-  - Visualization: **Table**.
-  - Query (Prometheus, instant):
-    ```promql
-    topk(10,
-      histogram_quantile(0.95,
-        sum by (span_name, le) (
-          rate(traces_spanmetrics_latency_bucket{
-            service_name="$service_name",
-            k8s_namespace_name="$namespace"
-          }[2m])
-        )
-      )
-    )
-    ```
-2. **Add a data link to Loki logs**
-  - In the panel editor, go to the **span_name** field overrides (or the panel-level data links).
-  - Click **Add data link**.
-  - **Title:** `View logs`
-  - **URL:**
-    ```
-    /explore?left={"datasource":"grafanacloud-logs","queries":[{"expr":"{namespace=\"$namespace\", service_name=\"$service_name\", span_name=\"${__data.fields.span_name}\"}"}],"range":{"from":"${__from}","to":"${__to}"}}
-    ```
-  - Alternatively, use the simpler Explore URL format your Grafana version supports.
-  - **Open in:** New tab
-3. **Test it**
-  - Select a service, then click a row in the table.
-  - It should open Explore with Loki pre-filtered to that service + span + time range.
+1. **Create a "Bugs" tab**
+   - In the current tab, click the **New tab** button.
+   - Name it **Bugs**.
 
-### Part B — Service Card → Tab 2
+2. **Add a Table panel**
+   - On the **Bugs** tab, click **+ Add panel** 
+   - Title: **Open GitHub Issues**.
 
-1. **Add a data link to each repeated service group (Fleet Overview)**
-  - Go back to the **Fleet Overview** tab.
-  - Edit one of the panels inside the repeated service group.
-  - Add a **data link**:
-    - **Title:** `Deep dive →`
-    - **URL:**
-      ```
-      /d/<dashboard-uid>/grot-plushies-sre?tab=service-deep-dive&var-service_name=${__field.labels.service_name}
-      ```
-      (Replace `<dashboard-uid>` with your actual dashboard UID — find it in the URL bar.)
-    - **Open in:** Same tab (to navigate within the same dashboard)
+3. **Load the CSV test data**
+   - Click **Configure** on the panel
+   - Data source: **TestData**.
+   - Scenario: **CSV Content**.
+   - Paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv) into the CSV field. It contains columns:
+     - `title`, `author`, `author_company`, `repo`, `number`, `closed`, `created_at`, `closed_at`, `updated_at`, `labels`, `assignees`
+   - Select **Table** as visualisation
 
-### Part C — Slow Spans → Tab 4 (DB services only)
+4. **Add a data link to the issue title**
+   - Open the **Overrides** section.
+   - Add a new override:
+     - Match: **Fields with name** `title`
+     - Add property: **Data links** , expand then click **+ Add link**
+       - **Title:** `Open on GitHub`
+       - **URL:** `https://github.com/${__data.fields.repo}/issues/${__data.fields.number}`
+       - Enable **Open in new tab**
 
-1. **Add a secondary data link on the slow spans table**
-  - Back on the **Top 10 Slowest Spans** panel (Tab 2).
-  - Add a second data link:
-    - **Title:** `Investigate database →`
-    - **URL:**
-      ```
-      /d/<dashboard-uid>/grot-plushies-sre?tab=database&var-service_name=${__data.fields.service_name}
-      ```
-  - This link is useful when the selected service is `cartservice` or `checkoutservice`.
-2. **Save.**
+5. **Hide the number/repo columns on the table**
+   - In the **Overrides** section
+   - Add a new override:
+     - Match: **Fields with name matching regex** `number|repo`
+     - Enable **Table > Hide in table**
 
-> **Checkpoint:** Clicking a span name in the table opens Loki logs. Clicking a service card navigates to Tab 2. A second link on slow spans leads to Tab 4 for DB-backed services.
+6. **Test the data link**
+   - In view mode, hover over any issue title — you should see the link tooltip.
+   - Click it → the corresponding GitHub issue opens in a new tab.
+
+7. Change the **Bugs** layout to Auto so the panel fills the space then **Save** the dashboard.
+
+> **Checkpoint:** The Bugs tab has a table of open GitHub issues. The `number` and `repo` columns are hidden. Clicking any issue title opens the real GitHub issue in a new tab.
 
 
 
 ---
 
-## Task 6 — Saved Queries
+## Task 7 — Saved Queries
 
 **Goal:** Extract a commonly-used query into the shared query library so anyone on the team can reuse it.
 
@@ -457,7 +437,7 @@ Steps
 
 ---
 
-## Task 7 — SQL Expressions
+## Task 8 — SQL Expressions
 
 **Goal:** Use SQL Expressions to combine data from multiple queries into a single table — no extra transformations needed.
 
@@ -527,58 +507,15 @@ Steps
 
 ---
 
-## Task 8 — Dashboard Datasource
+## Task 9 — Improving performance
 
-**Goal:** Reuse data already fetched by one panel as the source for another — zero duplicate queries.
 
-**Features practised:** Dashboard datasource, cross-panel data reuse
-
-Steps
-
-1. **Go to Tab 4 — Database**
-  - Ensure `service_name` is set to `checkoutservice` or `cartservice` (so the tab is visible if you applied show/hide rules).
-2. **Create a "Service RPS" panel on Tab 1 (if not already present)**
-  - Make a note of this panel's title (e.g. `Service RPS`). You'll reference it.
-  - Query:
-    ```promql
-    sum by (service_name) (
-      rate(traces_spanmetrics_calls_total{
-        k8s_namespace_name="$namespace",
-        service_name=~"cartservice|checkoutservice"
-      }[2m])
-    )
-    ```
-  - Visualization: **Time series**.
-3. **Create the correlation panel on Tab 4**
-  - Add a new panel. Title: **Service RPS vs DB QPS**.
-  - Visualization: **Time series**.
-  - **Query A — Dashboard datasource:**
-    - Set the data source to **-- Dashboard --**.
-    - Select the panel **Service RPS** from Tab 1.
-    - This pulls in the already-fetched RPS data — no second Prometheus query.
-  - **Query B — Postgres QPS (direct Prometheus query):**
-    ```promql
-    sum(rate(pg_stat_database_xact_commit[$__rate_interval]))
-    +
-    sum(rate(pg_stat_database_xact_rollback[$__rate_interval]))
-    ```
-  - Both series now appear on the same timeseries chart.
-4. **Add a field override to distinguish the two**
-  - **Override 1 (Query A — Service RPS):**
-    - **Axis:** Left Y
-    - **Color:** Blue
-  - **Override 2 (Query B — DB QPS):**
-    - **Axis:** Right Y
-    - **Color:** Purple
-5. **Save.**
-
-> **Checkpoint:** Tab 4 shows service RPS overlaid with DB QPS — and the RPS data was fetched only once, from Tab 1. Changing the time range updates both.
 
 
 
 ---
 
-## Task 9 — Putting It All Together
+## Task 10 — Putting It All Together
 
 **Goal:** Take a step back and verify the end-to-end flow.
 

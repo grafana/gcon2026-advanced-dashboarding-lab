@@ -2,13 +2,12 @@
 
 > You're the SRE on-call for **Grot Plushies**, a microservices e-commerce platform. An alert just fired. You open Grafana to investigate. Over the course of this lab you will build — from scratch — the very dashboard you'd want in that moment.
 
-**The platform runs five services:**
+**The platform runs four main services:**
 
 - **Frontend** : the user-facing storefront
-- **CartService** : manages shopping carts (backed by Redis + Postgres)
-- **CheckoutService** : orchestrates order placement (backed by Postgres)
+- **CartService** : manages shopping carts
 - **PaymentService** : processes payments
-- **ProductCatalog** : serves product listings
+- **ProductCatalogService** : serves product listings (backed by Postgres)
 
 **Data sources available in your instance:**
 
@@ -125,7 +124,16 @@ Steps
 
 _To add a dashboard level variable, click the **Add new element** button → Dashboard controls > **Variable** → select a type for it._
 
-1. **Add the `k8s_cluster_name` query variable**
+1. **Add the `show_business_metrics` variable (toggle)**
+   - **Type:** Switch
+   - **Name:** `show_business_metrics`
+   - **Label:** Include business metrics
+   - **Values:** `true,false`
+
+_To add a section level variable, select the section (row/tab), in its side pane, click the Variables > **Add variable** button → select a type for it._
+
+2. **Add the `k8s_cluster_name` query variable**
+   - In the **Fleet Overview** tab
    - **Type:** Query
    - **Name:** `k8s_cluster_name`. 
    - **Label:** `Cluster`. 
@@ -133,7 +141,8 @@ _To add a dashboard level variable, click the **Add new element** button → Das
    ![Variable editor for cluster: Prometheus data source, Query type set to Label values, Label set to k8s_cluster_name](./img/cluster.png)
    - Click **Preview** then **Close**.
 
-2. **Add the `cloud_region` variable**
+3. **Add the `cloud_region` variable**
+   - In the **Fleet Overview** tab
    - **Type:** Query
    - **Name:** `cloud_region`. 
    - **Label:** `Region`. 
@@ -141,14 +150,8 @@ _To add a dashboard level variable, click the **Add new element** button → Das
    ![Variable editor for region: Prometheus data source, Query type set to Label values, Label set to cloud_region, with a label filter chaining k8s_cluster_name equals $cluster](./img/regions.png)
    - Click **Preview** then **Close**.
 
-3. **Add the `show_business_metrics` variable (toggle)**
-   - **Type:** Switch
-   - **Name:** `show_business_metrics`
-   - **Label:** Include business metrics
-   - **Values:** `true,false`
-
-_To add a section level variable, select the section (row/tab), in its side pane, click the Variables > **Add variable** button → select a type for it._
 4. **Add the `service` variable**
+   - In the **Logs** tab
    - **Type:** Query
    - **Name:** `service`.
    - **Label:** `Services`. 
@@ -161,6 +164,9 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 6. **Wire up your panels**
   - In the **Fleet Overview** tab:
+    - Group all 3 panels into a **row** and call it **Unfiltered**
+      - We will use that row later on
+    - Duplicate the row, call it **Filtered**
     - Edit all 3 queries to add the filter. 
       - You can replace your queries with the corresponding filtered **saved query** (do not forget to map the correct template variables if needed!), 
       - or update them manually with:
@@ -179,8 +185,10 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 7. **Test the variables**
   - Use the dropdowns at the top to change `Cluster`, and `Region`.
-  - Verify the panels update accordingly. 
-  - Select multiple `Services` in the template variable and notice how the panel repeats itself
+    - Verify the panels in the **Filtered** row of the Fleet overview tab update accordingly. 
+    - Notice how the panels in the **Unfiltered** row do not
+  - In the **Logs** tab, select multiple `Services` in the template variable 
+    - Notice how the panel repeats itself
 8. **Save** the dashboard.
 
 > **Checkpoint:** Your dashboard has 3 variables in the top bar, 1 variable under the **Logs* tab. Changing cluster or region filters all three stat panels on Tab 1 and changing service repeats the logs panel in Logs tab.
@@ -189,63 +197,81 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 ---
 
-## Task 3 — Filters and Conditional Panels
+## Task 3 — Filters 
+**Goal:** Replace hard-coded query variables with ad-hoc filters
 
+**Features practised:** Ad-hoc filters
+
+Steps
+
+1. **Add a filter variable**
+  - Click the **Add new element** button → Dashboard controls > **Variable** → Filter
+  - **Type:** Filter
+  - **Name:** Filter
+  - **Data source:** `grafanacloud-fbde35-prom`
+
+2. In the **Fleet Overview** tab:
+  - Set up the new filter variable to reflect what you selected in the query variables.
+    - Notice how now the panels in both **Filtered** and **Unfiltered** rows now show the same thing.
+
+  | No filter selected    | Filters to match variables |
+  | -------- | ------- |
+  | ![filters empty](./img/without-filters.png)  | ![filters matching template variables](./img/with-filters.png)    |
+
+3. **Use filters only**
+  - Remove the 2 query variables for cluster & region
+  - Delete the row that references them
+  - To tidy up, you can also use **Ungroup rows** to remove the single row in your tab.
+
+> **Checkpoint:** Filters apply dashboard-wide and replace query variables. 
+
+
+
+---
+
+## Task 4 — Show/Hide Rules
 **Goal:** Replace hard-coded query variables with ad-hoc filters, add show/hide rules, and reorganise variables by section.
 
 **Features practised:** Ad-hoc filters, show/hide rules, section-level variables
 
 Steps
 
-### Part A — Ad-hoc Filters
-
-1. **Add an ad-hoc filter variable**
-  - Go to **Dashboard settings → Variables → Add variable**.
-  - **Type:** Ad Hoc Filters
-  - **Data source:** `grafanacloud-prom`
-  - Click **Apply**.
-2. In the **Fleet Overview** tab:
-  - Group all 3 panels into a **row** and call it **From variables**
-  - Duplicate the row, call it **Filters only**
-    - remove all the references to template variables in their queries
-  - Select a single value for the cluster & region query variables.
-    - Notice how the 2 rows do not show the same numbers.
-  - Now set up the new filter variable to reflect what you selected in the query variables.
-    - Notice how now the data is the same
-3. **Use filters only**
-  - Remove the 2 query variables for cluster & region
-  - Delete the row that references them
-  - To tidy up, you can also use **Ungroup rows** to remove the single row in your tab.
-
-### Part B — Show/Hide Rules
-
 1. **Add a show/hide rule for the Business Metrics tab**
   - Select the **Business Metrics** tab.
   - Add a show/hide rule:
-    - **Variable:** `include_business`
+    - **Tab visibility:** `Show`
+    - **Variable:** `Include business metrics`
     - **Operator:** `equals`
     - **Value:** `true`
-  - The entire tab is now hidden unless the toggle is on.
+  - The entire tab is now hidden unless the switch variable is toggled on.
+
+![show hide rule config as mentioned above](./img/show-hide-rule.png)
+
 2. **Test your rules**
+  - Toggle `include_business` on → the Business Metrics tab should show.
   - Toggle `include_business` off → the Business Metrics tab should hide.
 
-### Part C — Section-Level Variables
 
-1. **Move `service` to the Logs tab**
-  - It's only used there - let's declutter the top level
-2. **Add `time_window` as a section variable on Business Metrics**
-  - **Name:** `time_window`
-  - **Type:** Custom
-  - **Values:** `1h,6h,1d`
-3. **Save** the dashboard.
+> **Checkpoint:** A business metrics tab is hidden unless we toggle a switch variable.
 
-> **Checkpoint:** Filters apply dashboard-wide and replace query variables. A business tab is shown unless we toggle a switch variable, some tabs have section level variables.
 
+**Bonus Task**
+
+You're done early? 
+Try adding another rule to the dashboard: only show a new **Database** tab if your viewer selected a `datname` filter.
+You can add a panel using the saved query **Fetch data (SELECT)** to make it more real :).
+
+<details>
+<summary>View solution</summary>
+
+![Dashboard showing a tab, a show rule for it based on a filter including `datname` and a filter using that one.](./img/datname.png)
+
+</details>
 
 
 ---
 
-## Task 4 — Field Overrides
+## Task 5 — Field Overrides
 
 **Goal:** Make panels visually self-explanatory by styling individual series differently.
 

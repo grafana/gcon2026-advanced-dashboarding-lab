@@ -285,9 +285,12 @@ Steps
 
 1. **Navigate to Tab 3 — Business Metrics**
   - Make sure `include_business` is set to `true` so the tab is visible.
+
 2. **Create the panel**
    - Add a new panel. Title: **Orders vs Sessions**.
    - Visualization: **Time series**.
+   - Datasource: **Mixed**
+   - _Note: there are saved queries and even a library panel that you can use instead of the manual steps._
    - **Query A — Orders:** Loki
      ```logql
      sum(count_over_time({job=~"ditl-demo-prod/checkoutservice.+"} |= "order placed successfully"[$__range]))
@@ -302,18 +305,19 @@ Steps
    ![Panel query editor showing two queries: Query A from Prometheus for UniqueSessionCount with legend Sessions, and Query B from Loki counting order-placed log lines with legend Orders](./img/sessions_orders.png)
 
 3. **Add field overrides to differentiate the two series**
-  - Go to the **Overrides** tab in the panel editor.
-  - **Override 1 — Orders (Query A):**
-    - **Match:** Fields returned by query **A**
-    - **Color:** Green (`#73BF69`)
-    - **Line style:** Solid
-    - **Axis:** Left Y
-  - **Override 2 — Sessions (Query B):**
-    - **Match:** Fields returned by query **B**
-    - **Color:** Purple (`#8F3BB8`)
-    - **Line style:** Dashed
+
+
+  - Go to the **Overrides** section in the panel editor.
+    - _pro tip: you can click the **Show only overrides** button to get there faster_
+  - **Override 1 — Orders:**
+    - **Match:** Fields with name **Orders**
+    - **Color scheme:** Single color : Green
+  - **Override 2 — Sessions:**
+    - **Match:** Fields with name **Sessions**
+    - **Color scheme:** Single color : Purple 
+    - **Line style:** Dots
     - **Axis placement:** Right Y
-  - Click **Apply**.
+
 4. **Verify**
   - You should see two series on the same chart: Orders as a solid green line on the left axis, Sessions as a dashed purple line on the right axis.
   - The dual-axis layout lets you compare trends even when the absolute values are on different scales.
@@ -324,24 +328,24 @@ Steps
   - Data source: `grafanacloud-prom`
   - **Query** :
     ```promql
-    sum by (http_status_code) (rate(traces_spanmetrics_calls_total{}[$__rate_interval]))
-    )
+    sum by (http_status_code) (rate(traces_spanmetrics_calls_total{http_status_code!=""}[$__rate_interval]))
     ```
   - Visualization: **Time series** or **Bar chart**.
-  - Title: `HTTP Status Code`.
+  - Title: `HTTP Status Codes`.
+
 2. Open the **Overrides** section in the panel options.
 3. **Override 1 — make 2xx green:**
   - Click **Add field override** → **Fields with name matching regex**: `2[0-9][0-9]`
-  - Add property: **Standard options > Color scheme** → **Fixed color** → Green.
+  - Add property: **Standard options > Color scheme** → **Single color** → Green.
 4. **Override 2 — make 4xx orange:**
   - Click **Add field override** → **Fields with name matching regex**: `4[0-9][0-9]`
-  - Add property: **Standard options > Color scheme** → **Fixed color** → Orange.
+  - Add property: **Standard options > Color scheme** → **Single color** → Orange.
 5. **Override 3 — make 5xx red:**
   - Click **Add field override** → **Fields with name matching regex**: `5[0-9][0-9]`
-  - Add property: **Standard options > Color scheme** → **Fixed color** → Red.
+  - Add property: **Standard options > Color scheme** → **Single color** → Red.
 6. **Save** the panel.
 
-> **Checkpoint:** Confirm that 2xx bars/lines are green and 5xx are red in the visualization.
+> **Checkpoint:** Confirm that 2xx bars/lines are green, 4xx are orange and 5xx are red in the visualization.
 
 
 

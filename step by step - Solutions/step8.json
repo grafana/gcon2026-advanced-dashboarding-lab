@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "fdhck5b",
-    "generation": 5,
+    "generation": 6,
     "creationTimestamp": "2026-04-12T20:16:35Z",
     "labels": {},
     "annotations": {}
@@ -337,8 +337,8 @@
                 "showHeader": true,
                 "sortBy": [
                   {
-                    "desc": true,
-                    "displayName": "time open"
+                    "desc": false,
+                    "displayName": "updated at"
                   }
                 ]
               },
@@ -426,6 +426,42 @@
                       {
                         "id": "unit",
                         "value": "d"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "author"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 167
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "created at"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 180
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "updated at"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 170
                       }
                     ]
                   }
@@ -869,6 +905,30 @@
                       {
                         "id": "unit",
                         "value": "d"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "author"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 171
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "created at"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 176
                       }
                     ]
                   }
@@ -1927,7 +1987,7 @@
           {
             "kind": "TabsLayoutTab",
             "spec": {
-              "title": "Bugs",
+              "title": "Github stats",
               "layout": {
                 "kind": "RowsLayout",
                 "spec": {
@@ -1936,7 +1996,7 @@
                       "kind": "RowsLayoutRow",
                       "spec": {
                         "title": "Task 7: Transformations",
-                        "collapse": true,
+                        "collapse": false,
                         "layout": {
                           "kind": "AutoGridLayout",
                           "spec": {
@@ -1973,15 +2033,16 @@
                         "title": "Task 8 : SQL Expressions",
                         "collapse": false,
                         "layout": {
-                          "kind": "AutoGridLayout",
+                          "kind": "GridLayout",
                           "spec": {
-                            "maxColumnCount": 3,
-                            "columnWidthMode": "standard",
-                            "rowHeightMode": "standard",
                             "items": [
                               {
-                                "kind": "AutoGridLayoutItem",
+                                "kind": "GridLayoutItem",
                                 "spec": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "width": 24,
+                                  "height": 10,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-13"
@@ -1989,8 +2050,12 @@
                                 }
                               },
                               {
-                                "kind": "AutoGridLayoutItem",
+                                "kind": "GridLayoutItem",
                                 "spec": {
+                                  "x": 0,
+                                  "y": 10,
+                                  "width": 12,
+                                  "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-16"
@@ -1998,8 +2063,12 @@
                                 }
                               },
                               {
-                                "kind": "AutoGridLayoutItem",
+                                "kind": "GridLayoutItem",
                                 "spec": {
+                                  "x": 12,
+                                  "y": 10,
+                                  "width": 12,
+                                  "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-15"

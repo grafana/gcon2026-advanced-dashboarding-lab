@@ -1437,7 +1437,7 @@
           {
             "kind": "TabsLayoutTab",
             "spec": {
-              "title": "Bugs",
+              "title": "GitHub Stats",
               "layout": {
                 "kind": "AutoGridLayout",
                 "spec": {

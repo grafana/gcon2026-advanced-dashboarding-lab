@@ -14,24 +14,21 @@
 - `grafanacloud-fbde35-prom` — Prometheus (span metrics, SLO metrics, Postgres metrics)
 - `grafanacloud-fbde35-logs` — Loki (service logs, feature flag events)
 
-See [metrics-schema.md](/metrics-schema.md) for details about the metrics.
-
 ---
 
 ## Table of Contents
 
 
-| #   | Task                                                                                                    | Features                                                 | Solution                                                  |
-| --- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------- |
-| 1   | [Set Up the Dashboard Layout](#task-1--set-up-the-dashboard-layout)                                     | Tabs, layout groups, auto layout                         | [step1.json](step%20by%20step%20-%20Solutions/step1.json) |
-| 2   | [Make the Dashboard Interactive with Variables](#task-2--make-the-dashboard-interactive-with-variables) | Query variables, custom variables, variable chaining     | [step2.json](step%20by%20step%20-%20Solutions/step2.json) |
-| 3   | [Make the Dashboard Adaptive](#task-3--filters-and-conditional-panels)                                  | Ad-hoc filters, show/hide rules, section-level variables | [step3.json](step%20by%20step%20-%20Solutions/step3.json) |
-| 4   | [Field Overrides](#task-4--field-overrides)                                                             | Field overrides by name, by regex, colour and line style | [step4.json](step%20by%20step%20-%20Solutions/step4.json) |
-| 5   | [Data Links](#task-5--data-links)                                                                       | Field data links, dynamic link variables                 | [step5.json](step%20by%20step%20-%20Solutions/step5.json) |
-| 6   | [Saved Queries](#task-6--saved-queries)                                                                 | Saved queries, query library                             | —                                                         |
-| 7   | [SQL Expressions](#task-7--sql-expressions)                                                             | SQL Expression transformation, cross-query JOINs         | —                                                         |
-| 8   | [Dashboard Datasource](#task-8--dashboard-datasource)                                                   | Dashboard datasource, cross-panel data reuse             | —                                                         |
-| 9   | [Putting It All Together](#task-9--putting-it-all-together)                                             | End-to-end verification                                  | —                                                         |
+| #   | Task                                                                                                   | Features                                                      | Solution                                                  |
+| --- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------- |
+| 1   | [Set Up the Dashboard Layout](#task-1--set-up-the-dashboard-layout)                                    | Tabs, layout groups, auto layout                              | [step1.json](step%20by%20step%20-%20Solutions/step1.json) |
+| 2   | [Make the Dashboard Interactive with Variables](#task-2--make-the-dashboard-interactive-with-variables) | Query variables, custom variables, variable chaining          | [step2.json](step%20by%20step%20-%20Solutions/step2.json) |
+| 3   | [Filters](#task-3--filters)                                                                            | Ad-hoc filters                                                | [step3.json](step%20by%20step%20-%20Solutions/step3.json) |
+| 4   | [Show/Hide Rules](#task-4--showhide-rules)                                                             | Ad-hoc filters, show/hide rules, section-level variables      | [step4.json](step%20by%20step%20-%20Solutions/step4.json) |
+| 5   | [Field Overrides](#task-5--field-overrides)                                                             | Field overrides by name, by regex, colour and line style      | [step5.json](step%20by%20step%20-%20Solutions/step5.json) |
+| 6   | [Data Links](#task-6--data-links)                                                                      | Field data links, dynamic link variables                      | [step6.json](step%20by%20step%20-%20Solutions/step6.json) |
+| 7   | [Transformations](#task-7--transformations)                                                             | Transformations — filter, organise, calculate, convert        | [step7.json](step%20by%20step%20-%20Solutions/step7.json) |
+| 8   | [SQL Expressions](#task-8--sql-expressions)                                                            | SQL Expressions, cross-query JOINs                            | [step8.json](step%20by%20step%20-%20Solutions/step8.json) |
 
 
 ---
@@ -42,7 +39,8 @@ See [metrics-schema.md](/metrics-schema.md) for details about the metrics.
 
 **Features practised:** Tabs, layout groups, auto layout
 
-Steps
+<details>
+<summary>Steps</summary>
 
 1. **Create a new dashboard**
   - Click **Dashboards → New → New dashboard**.
@@ -110,6 +108,8 @@ Steps
 
 > **Checkpoint:** You should have a saved dashboard with 4 tabs. The Fleet Overview tab has 3 panels in an auto layout. The Logs tab has 1 panel.
 
+</details>
+
 
 
 ---
@@ -120,7 +120,8 @@ Steps
 
 **Features practised:** Query variables, custom variables, variable chaining
 
-Steps
+<details>
+<summary>Steps</summary>
 
 _To add a dashboard level variable, click the **Add new element** button → Dashboard controls > **Variable** → select a type for it._
 
@@ -193,6 +194,8 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 > **Checkpoint:** Your dashboard has 3 variables in the top bar, 1 variable under the **Logs* tab. Changing cluster or region filters all three stat panels on Tab 1 and changing service repeats the logs panel in Logs tab.
 
+</details>
+
 
 
 ---
@@ -202,7 +205,8 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 **Features practised:** Ad-hoc filters
 
-Steps
+<details>
+<summary>Steps</summary>
 
 1. **Add a filter variable**
   - Click the **Add new element** button → Dashboard controls > **Variable** → Filter
@@ -225,6 +229,8 @@ Steps
 
 > **Checkpoint:** Filters apply dashboard-wide and replace query variables. 
 
+</details>
+
 
 
 ---
@@ -234,7 +240,8 @@ Steps
 
 **Features practised:** Ad-hoc filters, show/hide rules, section-level variables
 
-Steps
+<details>
+<summary>Steps</summary>
 
 1. **Add a show/hide rule for the Business Metrics tab**
   - Select the **Business Metrics** tab.
@@ -268,6 +275,8 @@ You can add a panel using the saved query **Fetch data (SELECT)** to make it mor
 
 </details>
 
+</details>
+
 
 ---
 
@@ -279,7 +288,8 @@ You can add a panel using the saved query **Fetch data (SELECT)** to make it mor
 
 There are 2 exercises in that section, you can do both or pick one of them.
 
-Steps
+<details>
+<summary>Steps</summary>
 
 ### Part A — Orders vs Sessions (Business Metrics)
 
@@ -347,6 +357,8 @@ Steps
 
 > **Checkpoint:** Confirm that 2xx bars/lines are green, 4xx are orange and 5xx are red in the visualization.
 
+</details>
+
 
 
 ---
@@ -357,16 +369,17 @@ Steps
 
 **Features practised:** Field data links, dynamic link variables
 
-Steps
+<details>
+<summary>Steps</summary>
 
 0. If you do not have one provisionned - add a **TestData** datasource in your instance
 
-1. **Create a "Bugs" tab**
+1. **Create a "Github Stats" tab**
    - In the current tab, click the **New tab** button.
-   - Name it **Bugs**.
+   - Name it **Github Stats**.
 
 2. **Add a Table panel**
-   - On the **Bugs** tab, click **+ Add panel** 
+   - On the **Github Stats** tab, click **+ Add panel** 
    - Title: **Open GitHub Issues**.
 
 3. **Load the CSV test data**
@@ -396,9 +409,9 @@ Steps
    - In view mode, hover over any issue title — you should see the link tooltip.
    - Click it → the corresponding GitHub issue opens in a new tab.
 
-7. Change the **Bugs** layout to Auto so the panel fills the space then **Save** the dashboard.
+7. Change the **GitHub Stats** layout to Auto so the panel fills the space then **Save** the dashboard.
 
-> **Checkpoint:** The Bugs tab has a table of open GitHub issues. The `number` and `repo` columns are hidden. Clicking any issue title opens the real GitHub issue in a new tab.
+> **Checkpoint:** The GitHub Stats tab has a table of open GitHub issues. The `number` and `repo` columns are hidden. Clicking any issue title opens the real GitHub issue in a new tab.
 
 **Bonus task**
 You're done early? 
@@ -408,6 +421,8 @@ Make the labels display as pills.
 <summary>View solution</summary>
 
 ![Override for label column showing cell options > cell type as `pill`](./img/labels-as-pills.png)
+
+</details>
 
 </details>
 
@@ -421,7 +436,8 @@ Make the labels display as pills.
 
 **Features practised:** Transformations - filter, organise, calculate, convert
 
-Steps
+<details>
+<summary>Steps</summary>
 
 1. **Filter data by value**
   - Only show issues that are not closed
@@ -451,6 +467,8 @@ You're done early?
   ![Add field from calculation times 2, to get the milisecond between closed and open time, then to convert it to number of days](./img/calc_time_open.png)
   </details>
 
+</details>
+
 
 
 ---
@@ -461,7 +479,8 @@ You're done early?
 
 **Features practised:** Transformations, SQL Expressions, cross-query JOINs
 
-Steps
+<details>
+<summary>Steps</summary>
 
 ### Part A — Replace Task 7 transformations with SQL
 
@@ -490,7 +509,7 @@ WHERE closed = false
 
 **Goal:** Use subqueries and a JOIN inside a single SQL expression to compare bug and feature request volume across repos.
 
-1. **Add a new panel on the Bugs tab**
+1. **Add a new panel on the GitHub Stats tab**
    - Title: **Bug vs Feature Requests by Repository**
    - Visualization: **Table**
    - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
@@ -537,7 +556,7 @@ You're done early?
 <details>
 <summary>View solution</summary>
 
-1. **Add a new panel on the Bugs tab**
+1. **Add a new panel on the GitHub Stats tab**
    - Title: **Top Issue Reporters**
    - Visualization: **Table**
    - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
@@ -574,10 +593,11 @@ LIMIT 10
 
 > **Checkpoint:** The leaderboard shows the top 10 contributors ranked by open issues filed, with each person's share of the total. `RANK()` and `SUM() OVER ()` are doing work that would require multiple transformation steps — and even then couldn't produce a true rank column.
 
+</details>
 
 
 
-### Congratulations!
+## Congratulations!
 
 You've built a single, context-aware dashboard that:
 

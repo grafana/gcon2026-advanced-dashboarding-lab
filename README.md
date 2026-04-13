@@ -19,7 +19,7 @@ A single, multi-tab SRE dashboard that takes you from alert to root cause withou
 | Logs | Logs per container |
 | Service Deep Dive | Endpoint latency, error breakdown, slow span investigation |
 | Business Metrics | SLO compliance, active users, sessions, orders |
-| Bugs & Escalations | Github data about bug reports and customer escalations |
+| Github Stats | Github data about bug reports and customer escalations |
 
 ## Features Covered
 
@@ -28,10 +28,11 @@ Tabs & auto layout, template variables, panel repeats, ad-hoc filters, show/hide
 ## Repo Structure
 
 ```
-exercises.md        Step-by-step lab exercises (Tasks 1–10)
-narrative.md        Scenario context, persona flows, and dashboard design
-metrics-schema.md   Metrics reference (Prometheus, Loki, Postgres, SLO)
-resources/          CSV datasets (Grafana open issues, OSS issue history)
+exercises.md                Step-by-step lab exercises (Tasks 1–10)
+narrative.md                Scenario context, persona flows, and dashboard design
+resources/                  CSV datasets (OSS issue history)
+img/                        Screenshots referenced in exercises
+step by step - Solutions/   Dashboard JSON snapshots after each step (step1–step8)
 ```
 
 ## Prerequisites

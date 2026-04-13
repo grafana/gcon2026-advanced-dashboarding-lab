@@ -23,8 +23,8 @@
 | --- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------- |
 | 1   | [Set Up the Dashboard Layout](#task-1--set-up-the-dashboard-layout)                                    | Tabs, layout groups, auto layout                              | [step1.json](step%20by%20step%20-%20Solutions/step1.json) |
 | 2   | [Make the Dashboard Interactive with Variables](#task-2--make-the-dashboard-interactive-with-variables) | Query variables, custom variables, variable chaining          | [step2.json](step%20by%20step%20-%20Solutions/step2.json) |
-| 3   | [Filters](#task-3--filters)                                                                            | Ad-hoc filters                                                | [step3.json](step%20by%20step%20-%20Solutions/step3.json) |
-| 4   | [Show/Hide Rules](#task-4--showhide-rules)                                                             | Ad-hoc filters, show/hide rules, section-level variables      | [step4.json](step%20by%20step%20-%20Solutions/step4.json) |
+| 3   | [Filters](#task-3--filters)                                                                            | Filters                                                | [step3.json](step%20by%20step%20-%20Solutions/step3.json) |
+| 4   | [Show/Hide Rules](#task-4--showhide-rules)                                                             | Filters, show/hide rules, section-level variables      | [step4.json](step%20by%20step%20-%20Solutions/step4.json) |
 | 5   | [Field Overrides](#task-5--field-overrides)                                                             | Field overrides by name, by regex, colour and line style      | [step5.json](step%20by%20step%20-%20Solutions/step5.json) |
 | 6   | [Data Links](#task-6--data-links)                                                                      | Field data links, dynamic link variables                      | [step6.json](step%20by%20step%20-%20Solutions/step6.json) |
 | 7   | [Transformations](#task-7--transformations)                                                             | Transformations — filter, organise, calculate, convert        | [step7.json](step%20by%20step%20-%20Solutions/step7.json) |
@@ -156,7 +156,7 @@ _To add a section level variable, select the section (row/tab), in its side pane
    - **Type:** Query
    - **Name:** `service`.
    - **Label:** `Services`. 
-  ![Variable editor for service: Loki data source, Query type set to Label values, Label set to container, stream selector using $k8s_cluster_name and $namespace filter](./img/service.png)
+  ![Variable editor for service: Loki data source, Query type set to Label values, Label set to container, stream selector using $k8s_cluster_name](./img/service.png)
    - **Stream selector:** `{cluster="$k8s_cluster_name"}`
    - Click **Preview** then **Close**.
    - **Multi-value:** On
@@ -201,16 +201,15 @@ _To add a section level variable, select the section (row/tab), in its side pane
 ---
 
 ## Task 3 — Filters 
-**Goal:** Replace hard-coded query variables with ad-hoc filters
+**Goal:** Replace hard-coded query variables with filters
 
-**Features practised:** Ad-hoc filters
+**Features practised:** Filters
 
 <details>
 <summary>Steps</summary>
 
-1. **Add a filter variable**
-  - Click the **Add new element** button → Dashboard controls > **Variable** → Filter
-  - **Type:** Filter
+1. **Add a filter**
+  - Click the **Add new element** button → Dashboard controls > **Filter** → Filter
   - **Name:** Filter
   - **Data source:** `grafanacloud-fbde35-prom`
 
@@ -236,9 +235,9 @@ _To add a section level variable, select the section (row/tab), in its side pane
 ---
 
 ## Task 4 — Show/Hide Rules
-**Goal:** Replace hard-coded query variables with ad-hoc filters, add show/hide rules, and reorganise variables by section.
+**Goal:** Add show/hide rules, and reorganise variables by section.
 
-**Features practised:** Ad-hoc filters, show/hide rules, section-level variables
+**Features practised:** Show/hide rules, section-level variables
 
 <details>
 <summary>Steps</summary>
@@ -265,13 +264,13 @@ _To add a section level variable, select the section (row/tab), in its side pane
 **Bonus Task**
 
 You're done early? 
-Try adding another rule to the dashboard: only show a new **Database** tab if your viewer selected a `datname` filter.
+Try adding another rule to the dashboard: only show a new **Database** tab if your viewer selected a productcatalog in the filter.
 You can add a panel using the saved query **Fetch data (SELECT)** to make it more real :).
 
 <details>
 <summary>View solution</summary>
 
-![Dashboard showing a tab, a show rule for it based on a filter including `datname` and a filter using that one.](./img/datname.png)
+![Dashboard showing a tab, a show rule for it based on a filter including `productcatalog` job and a filter using that one.](./img/database-filter.png)
 
 </details>
 
@@ -602,7 +601,7 @@ LIMIT 10
 You've built a single, context-aware dashboard that:
 
 - Adapts its layout with **tabs and auto layout**
-- Scopes every panel with **template variables** and **ad-hoc filters**
+- Scopes every panel with **template variables** and **filters**
 - Repeats panels per service with **repeat groups**
 - Shows the right panels at the right time with **show/hide rules**
 - Keeps each tab focused with **section-level variables**

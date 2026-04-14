@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "fdk9bw7",
-    "generation": 6,
+    "generation": 10,
     "creationTimestamp": "2026-04-12T10:22:19Z",
     "labels": {},
     "annotations": {}
@@ -94,6 +94,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "reqps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -366,50 +367,36 @@
             "spec": {
               "title": "Fleet Overview",
               "layout": {
-                "kind": "RowsLayout",
+                "kind": "AutoGridLayout",
                 "spec": {
-                  "rows": [
+                  "maxColumnCount": 3,
+                  "columnWidthMode": "narrow",
+                  "rowHeightMode": "short",
+                  "items": [
                     {
-                      "kind": "RowsLayoutRow",
+                      "kind": "AutoGridLayoutItem",
                       "spec": {
-                        "title": "Overall",
-                        "collapse": false,
-                        "layout": {
-                          "kind": "AutoGridLayout",
-                          "spec": {
-                            "maxColumnCount": 3,
-                            "columnWidthMode": "narrow",
-                            "rowHeightMode": "short",
-                            "items": [
-                              {
-                                "kind": "AutoGridLayoutItem",
-                                "spec": {
-                                  "element": {
-                                    "kind": "ElementReference",
-                                    "name": "panel-1"
-                                  }
-                                }
-                              },
-                              {
-                                "kind": "AutoGridLayoutItem",
-                                "spec": {
-                                  "element": {
-                                    "kind": "ElementReference",
-                                    "name": "panel-2"
-                                  }
-                                }
-                              },
-                              {
-                                "kind": "AutoGridLayoutItem",
-                                "spec": {
-                                  "element": {
-                                    "kind": "ElementReference",
-                                    "name": "panel-3"
-                                  }
-                                }
-                              }
-                            ]
-                          }
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-1"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "AutoGridLayoutItem",
+                      "spec": {
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-2"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "AutoGridLayoutItem",
+                      "spec": {
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-3"
                         }
                       }
                     }
@@ -459,18 +446,6 @@
             "kind": "TabsLayoutTab",
             "spec": {
               "title": "Business Metrics",
-              "layout": {
-                "kind": "GridLayout",
-                "spec": {
-                  "items": []
-                }
-              }
-            }
-          },
-          {
-            "kind": "TabsLayoutTab",
-            "spec": {
-              "title": "Bug Reports & Support Escalations",
               "layout": {
                 "kind": "GridLayout",
                 "spec": {

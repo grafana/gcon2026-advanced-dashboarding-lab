@@ -1,6 +1,6 @@
 # GrafanaCON 2026 — Advanced Dashboarding Lab: Exercises
 
-> You're the SRE on-call for **Grot Plushies**, a microservices e-commerce platform. An alert just fired. You open Grafana to investigate. Over the course of this lab you will build — from scratch — the very dashboard you'd want in that moment.
+> You work for **Grot Plushies**, an e-commerce platform selling super cute Grot plushies. Your job: build a many-in-one dashboard for SREs, EMs, PMs and engineers to visualise **system health** (services, database, logs), **business impact** (orders and revenue) and **project management** (open issues, bug reports, customer support escalations) — all in a single page.
 
 **The platform runs four main services:**
 
@@ -456,7 +456,7 @@ You're done early?
  - filter the table for bugs only
   <details>
   <summary>View solution</summary>
-  ![Filter for bugs: labels containing `type/bug` substring](./img/filter-bugs.png)
+  ![Filter for bugs: labels containing `bug` substring](./img/filter-bugs.png)
   </details>
 
  - switch to only showing closed issues and calculate the time the issue was open for
@@ -519,22 +519,14 @@ WHERE closed = false
 
 ```sql
 SELECT
-  bugs.repo as repository,
-  bugs.bug_count,
-  features.feature_count,
-  ROUND(bugs.bug_count * 100.0 / (bugs.bug_count + features.feature_count), 1) AS bug_pct
-FROM
-  (SELECT repo, COUNT(*) AS bug_count
-   FROM A
-   WHERE labels LIKE '%type/bug%'
-   GROUP BY repo) bugs
-JOIN
-  (SELECT repo, COUNT(*) AS feature_count
-   FROM A
-   WHERE labels LIKE '%type/feature-request%'
-   GROUP BY repo) features
-ON bugs.repo = features.repo
-ORDER BY bug_pct DESC
+  repo as repository,
+  COUNT(CASE WHEN labels LIKE '%bug%' THEN 1 ELSE null END)/COUNT(*) as `Bugs %`,
+  COUNT(CASE WHEN labels LIKE '%feature-request%' THEN 1 ELSE null END)/COUNT(*) as `Feature requests %`,
+  COUNT(CASE WHEN labels LIKE '%customer-support%' THEN 1 ELSE null END)/COUNT(*) as `Support escalations %`
+FROM A 
+WHERE 
+  closed = false
+GROUP BY repo
 ```
 
 3. **Add a unit override on `bug_pct`**
@@ -598,17 +590,16 @@ LIMIT 10
 
 ## Congratulations!
 
-You've built a single, context-aware dashboard that:
+You've built a single, many-in-one dashboard that covers system health, business impact and project management — all in one place. Along the way you used:
 
-- Adapts its layout with **tabs and auto layout**
-- Scopes every panel with **template variables** and **filters**
-- Repeats panels per service with **repeat groups**
-- Shows the right panels at the right time with **show/hide rules**
-- Keeps each tab focused with **section-level variables**
-- Makes data visually distinct with **field overrides**
-- Wires investigation paths with **data links**
-- Standardises queries with the **saved query library**
-- Combines data with **SQL Expressions**
+- **Tabs and auto layout** to organise content by audience
+- **Template variables** and **filters** to scope every panel dynamically
+- **Repeat groups** to generate per-service views automatically
+- **Show/hide rules** to surface the right panels at the right time
+- **Section-level variables** to keep each tab focused
+- **Field overrides** to make data visually self-explanatory
+- **Data links** to wire investigation paths between panels
+- **Saved queries** to standardise and reuse queries
+- **SQL Expressions** to combine and reshape data without extra transformations
 
-
-**One dashboard. Every persona. Every scenario. From alert to root cause in 90 seconds.**
+**One dashboard. Every persona. Every scenario.**

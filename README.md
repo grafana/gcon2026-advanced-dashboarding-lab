@@ -1,6 +1,6 @@
 # GrafanaCON 2026 — Advanced Dashboarding Lab
 
-A hands-on lab for GrafanaCON 2026 where participants build a production-grade Grafana dashboard from scratch, using the **Grot Plushies** e-commerce platform as the scenario.
+A hands-on lab for GrafanaCON 2026 where participants build a many-in-one Grafana dashboard from scratch, using the **Grot Plushies** e-commerce platform as the scenario.
 
 
 ## Facilitator
@@ -11,7 +11,7 @@ A hands-on lab for GrafanaCON 2026 where participants build a production-grade G
 
 ## What You'll Build
 
-A single, multi-tab SRE dashboard that takes you from alert to root cause without leaving the page. The dashboard serves three personas — on-call SRE, service owner, and engineering manager — through four interconnected tabs:
+A single, many-in-one dashboard that gives SREs, engineering managers, PMs and engineers a shared view of the platform — without opening a second tab. The dashboard is organised around three pillars:
 
 | Tab | Focus |
 |-----|-------|
@@ -43,3 +43,5 @@ step by step - Solutions/   Dashboard JSON snapshots after each step (step1–st
 ## Getting Started
 
 Open `exercises.md` and follow along from Task 1. Each task builds on the previous one and includes a checkpoint to verify your progress.
+
+For the full scenario context, persona flows and dashboard design notes, see `narrative.md`.

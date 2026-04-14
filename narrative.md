@@ -2,11 +2,9 @@
 
 ---
 
-## Narrative: "Grot Plushies SRE"
+## Narrative: "Grot Plushies — One Dashboard to Rule Them All"
 
-You're the SRE on-call for Grot Plushies, a microservices e-commerce platform. An alert just fired. You open the dashboard to investigate... Over the course of this lab, you will build the very dashboard you'd want in that moment.
-
-The platform runs five services:
+You work for Grot Plushies, an e-commerce platform selling super cute Grot plushies. The platform is a microservices architecture running five services:
 
 - **Frontend** : the user-facing storefront
 - **CartService** : manages shopping carts (backed by Redis + Postgres)
@@ -14,18 +12,19 @@ The platform runs five services:
 - **PaymentService** : processes payments
 - **ProductCatalog** : serves product listings
 
-Your job: build a single dashboard that gives you - and your team - everything needed to go from alert to root cause and impact on business metrics without opening a second tab.
+Your job: build a single, many-in-one dashboard that gives SREs, engineering managers, PMs and engineers a shared view of the platform — covering **system health**, **business impact** and **project management** — without opening a second tab.
 
 ---
 
 ## Personas
 
 
-| Persona    | Role                | Needs                                                            |
-| ---------- | ------------------- | ---------------------------------------------------------------- |
-| **Alex**   | SRE On-call         | Fleet health, error spikes, latency, SLO burn rate               |
-| **Priya**  | Service Owner       | Per-service deep dive, endpoint breakdown, logs                  |
-| **Jordan** | Engineering Manager | SLO compliance, error budgets, business impact (orders, revenue) |
+| Persona    | Role                | Needs                                                             |
+| ---------- | ------------------- | ----------------------------------------------------------------- |
+| **Alex**   | SRE                 | Fleet health, error spikes, latency, logs                         |
+| **Priya**  | Engineer            | Per-service deep dive, endpoint breakdown, database performance   |
+| **Jordan** | Engineering Manager | Business impact (orders, revenue), SLO compliance                 |
+| **Sam**    | PM                  | Open issues, bug reports, customer support escalations            |
 
 
 ---
@@ -33,11 +32,12 @@ Your job: build a single dashboard that gives you - and your team - everything n
 ## Persona Navigation Flows
 
 
-| Persona    | Path                                       | Trigger                                        |
-| ---------- | ------------------------------------------ | ---------------------------------------------- |
-| **Alex**   | Tab 1 → Tab 4                              | Alert fires → fleet anomaly → DB investigation |
-| **Priya**  | Tab 1 (click service card) → Tab 2 → Tab 4 | Investigating a specific service end-to-end    |
-| **Jordan** | Tab 3 direct                               | Reviewing SLO compliance and business impact   |
+| Persona    | Path                                       | Trigger                                                      |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------ |
+| **Alex**   | Fleet Overview → Logs → Service Deep Dive  | Investigating an error spike across services                 |
+| **Priya**  | Service Deep Dive → Database               | Debugging endpoint latency for a specific service            |
+| **Jordan** | Business Metrics                           | Reviewing orders, revenue and session trends                 |
+| **Sam**    | Github Stats                               | Triaging open bugs and customer support escalations          |
 
 
 ---

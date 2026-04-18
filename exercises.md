@@ -438,6 +438,8 @@ Make the labels display as pills.
 <details>
 <summary>Steps</summary>
 
+> **Important:** Transformations are applied *before* overrides. If you use a transformation to remove a field (e.g. via **Organise fields**), any data link that references that field with `${__data.fields.<name>}` will resolve to an empty string — because the field no longer exists by the time overrides run. If you need a field available for a data link but don't want it visible in the table, use the **Hide in table** override (as we did in Task 6, step 5) instead of removing it with a transformation.
+
 1. **Filter data by value**
   - Only show issues that are not closed
 
@@ -539,10 +541,17 @@ GROUP BY repo
 
 ---
 
-### Bonus task / Challenge: Window functions: Contributor leaderboard
-You're done early? 
+### Challenge: Bug hunter leaderboard
+You're done early? Complete this challenge!
+Grot plushies is shipping a new, improved version of their payment service. To make sure evrything is working as expected, you are running a bug bash: every employee is encouraged to try things out and report bugs. 
+You want to give a public shoutout to the top bug hunters at the next group meeting.
 
-**Goal:** Use `RANK()` and `SUM() OVER ()` to build a ranked leaderboard - Who are the top 3 OSS contributors and what percentage of the repo have they contributed to?
+_When you are done, submit your answers in [this form](https://docs.google.com/forms/d/e/1FAIpQLSfO-wiPqML91LuNJffZ5VIfH7GbwbNodoyk5vAPIMt3V6rWiA/viewform) - You'll get a prize if you are the first to respond!!_
+_**Note:** You can submit the form several time. Feel free to answer the first question as soon as you can and spend time thinking about the second one afterwards._
+
+**Goal:** Use `RANK()` and `SUM() OVER ()` to build a ranked leaderboard 
+  - Who are the top 3  bug hunters?
+  - What percentage of the repo have they contributed to?
 
 <details>
 <summary>View solution</summary>
@@ -556,20 +565,22 @@ You're done early?
 
 ```sql
 SELECT
-  RANK() OVER (ORDER BY issues_reported DESC) AS `rank`,
+  RANK() OVER (ORDER BY bugs_reported DESC) AS `rank`,
   author,
-  issues_reported,
-  ROUND(issues_reported * 100.0 / SUM(issues_reported) OVER (), 1) AS percentage
+  bugs_reported,
+  ROUND(bugs_reported * 100.0 / SUM(bugs_reported) OVER (), 1) AS percentage
 FROM (
-  SELECT author, COUNT(*) AS issues_reported
+  SELECT author, COUNT(*) AS bugs_reported
   FROM A
   WHERE 
-    closed = false 
+    labels LIKE '%bug%'
+    AND repo = 'grot-plushies/payment-service'
     AND author IS NOT NULL
+    AND created_at <= $__to AND created_at >= $__from
   GROUP BY author
 ) sub
-ORDER BY issues_reported DESC
-LIMIT 10
+ORDER BY bugs_reported DESC
+LIMIT 20
 ```
 
 3. **Add overrides to style the leaderboard**

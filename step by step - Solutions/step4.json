@@ -2,9 +2,9 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "fdzptvf",
-    "generation": 3,
-    "creationTimestamp": "2026-04-12T16:42:48Z",
+    "name": "ya97kcm",
+    "generation": 4,
+    "creationTimestamp": "2026-04-18T20:45:33Z",
     "labels": {},
     "annotations": {}
   },
@@ -33,76 +33,10 @@
     "cursorSync": "Off",
     "editable": true,
     "elements": {
-      "panel-4": {
+      "panel-1": {
         "kind": "Panel",
         "spec": {
-          "id": 4,
-          "title": "Most recent logs - $service",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "loki",
-                      "version": "v0",
-                      "spec": {
-                        "direction": "backward",
-                        "editorMode": "code",
-                        "expr": "{namespace=\"ditl-demo-prod\", container=\"$service\"}",
-                        "maxLines": 100,
-                        "queryType": "range"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "loki-1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "logs",
-            "version": "13.1.0-24251769778",
-            "spec": {
-              "options": {
-                "dedupStrategy": "none",
-                "enableInfiniteScrolling": false,
-                "enableLogDetails": true,
-                "prettifyLogMessage": true,
-                "showControls": false,
-                "showFieldSelector": false,
-                "showLevel": false,
-                "showLogAttributes": true,
-                "showTime": true,
-                "sortOrder": "Descending",
-                "timestampResolution": "ms",
-                "unwrappedColumns": false,
-                "wrapLogMessage": false
-              },
-              "fieldConfig": {
-                "defaults": {},
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "id": 5,
+          "id": 1,
           "title": "Total RPS",
           "description": "",
           "links": [],
@@ -120,7 +54,6 @@
                       "spec": {
                         "editorMode": "code",
                         "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval]))",
-                        "legendFormat": "__auto",
                         "range": true
                       },
                       "labels": {
@@ -139,17 +72,17 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
                 "reduceOptions": {
                   "calcs": [
-                    "lastNotNull"
+                    "mean"
                   ],
                   "fields": "",
                   "values": false
@@ -160,6 +93,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "reqps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -183,10 +117,10 @@
           }
         }
       },
-      "panel-6": {
+      "panel-2": {
         "kind": "Panel",
         "spec": {
-          "id": 6,
+          "id": 2,
           "title": "Error rate",
           "description": "",
           "links": [],
@@ -223,11 +157,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -268,11 +202,11 @@
           }
         }
       },
-      "panel-7": {
+      "panel-3": {
         "kind": "Panel",
         "spec": {
-          "id": 7,
-          "title": "P95 latency",
+          "id": 3,
+          "title": "P95 Latency",
           "description": "",
           "links": [],
           "data": {
@@ -288,7 +222,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{}[$__rate_interval])\n  )\n)",
+                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval])\n  )\n)",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -308,7 +242,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -352,6 +286,326 @@
             }
           }
         }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "id": 4,
+          "title": "Most recent logs - $service",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "loki",
+                      "version": "v0",
+                      "spec": {
+                        "direction": "backward",
+                        "editorMode": "code",
+                        "expr": "{namespace=\"ditl-demo-prod\", container=\"${service}\"}",
+                        "maxLines": 100,
+                        "queryType": "range"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "loki-1"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "logs",
+            "version": "13.1.0-24556818486",
+            "spec": {
+              "options": {
+                "dedupStrategy": "none",
+                "enableInfiniteScrolling": false,
+                "enableLogDetails": true,
+                "prettifyLogMessage": true,
+                "showControls": false,
+                "showFieldSelector": false,
+                "showLevel": true,
+                "showLogAttributes": true,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "timestampResolution": "ms",
+                "unwrappedColumns": false,
+                "wrapLogMessage": false
+              },
+              "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-8": {
+        "kind": "Panel",
+        "spec": {
+          "id": 8,
+          "title": "Requests",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "sum(rate(traces_spanmetrics_calls_total{http_status_code!=\"\"}[$__rate_interval]))",
+                        "instant": false,
+                        "legendFormat": "__auto",
+                        "range": true
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0-24556818486",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "/.*/"
+                    },
+                    "properties": [
+                      {
+                        "id": "filterable",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-9": {
+        "kind": "Panel",
+        "spec": {
+          "id": 9,
+          "title": "Fetch Data (SELECT)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "sum(pg_stat_database_tup_fetched{instance=\"productcatalog-postgres\"} != 0) by (datname)",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{datname}}",
+                        "range": true,
+                        "step": 2
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0-24556818486",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
       }
     },
     "layout": {
@@ -374,7 +628,7 @@
                       "spec": {
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-5"
+                          "name": "panel-1"
                         }
                       }
                     },
@@ -383,7 +637,7 @@
                       "spec": {
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-6"
+                          "name": "panel-2"
                         }
                       }
                     },
@@ -392,7 +646,7 @@
                       "spec": {
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-7"
+                          "name": "panel-3"
                         }
                       }
                     }
@@ -428,6 +682,21 @@
                   ]
                 }
               },
+              "conditionalRendering": {
+                "kind": "ConditionalRenderingGroup",
+                "spec": {
+                  "visibility": "show",
+                  "condition": "and",
+                  "items": [
+                    {
+                      "kind": "ConditionalRenderingTimeRangeSize",
+                      "spec": {
+                        "value": "7d"
+                      }
+                    }
+                  ]
+                }
+              },
               "variables": [
                 {
                   "kind": "QueryVariable",
@@ -435,10 +704,12 @@
                     "name": "service",
                     "current": {
                       "text": [
-                        "accountingservice"
+                        "cartservice",
+                        "frontend"
                       ],
                       "value": [
-                        "accountingservice"
+                        "cartservice",
+                        "frontend"
                       ]
                     },
                     "label": "Services",
@@ -465,8 +736,8 @@
                     "definition": "",
                     "options": [],
                     "multi": true,
-                    "includeAll": true,
-                    "allowCustomValue": false
+                    "includeAll": false,
+                    "allowCustomValue": true
                   }
                 }
               ]
@@ -477,9 +748,65 @@
             "spec": {
               "title": "Service Deep Dive",
               "layout": {
+                "kind": "AutoGridLayout",
+                "spec": {
+                  "maxColumnCount": 3,
+                  "columnWidthMode": "standard",
+                  "rowHeightMode": "standard",
+                  "items": [
+                    {
+                      "kind": "AutoGridLayoutItem",
+                      "spec": {
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-8"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "kind": "TabsLayoutTab",
+            "spec": {
+              "title": "Database",
+              "layout": {
                 "kind": "GridLayout",
                 "spec": {
-                  "items": []
+                  "items": [
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 12,
+                        "height": 8,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-9"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "conditionalRendering": {
+                "kind": "ConditionalRenderingGroup",
+                "spec": {
+                  "visibility": "show",
+                  "condition": "and",
+                  "items": [
+                    {
+                      "kind": "ConditionalRenderingVariable",
+                      "spec": {
+                        "variable": "Filter",
+                        "operator": "matches",
+                        "value": ".*productcatalog.*"
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -512,35 +839,6 @@
                 }
               }
             }
-          },
-          {
-            "kind": "TabsLayoutTab",
-            "spec": {
-              "title": "Database",
-              "layout": {
-                "kind": "GridLayout",
-                "spec": {
-                  "items": []
-                }
-              },
-              "conditionalRendering": {
-                "kind": "ConditionalRenderingGroup",
-                "spec": {
-                  "visibility": "show",
-                  "condition": "and",
-                  "items": [
-                    {
-                      "kind": "ConditionalRenderingVariable",
-                      "spec": {
-                        "variable": "Filter",
-                        "operator": "matches",
-                        "value": "datname"
-                      }
-                    }
-                  ]
-                }
-              }
-            }
           }
         ]
       }
@@ -551,7 +849,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-6h",
+      "from": "now-24h",
       "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
@@ -569,8 +867,20 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Step 4: Show/Hide Rules",
+    "title": "Step 4 : Show/Hide rules",
     "variables": [
+      {
+        "kind": "SwitchVariable",
+        "spec": {
+          "name": "show_business_metrics",
+          "current": "true",
+          "enabledValue": "true",
+          "disabledValue": "false",
+          "label": "Display business metrics",
+          "hide": "dontHide",
+          "skipUrlSync": false
+        }
+      },
       {
         "kind": "AdhocVariable",
         "group": "prometheus",
@@ -587,38 +897,16 @@
                 "fbde35-cluster"
               ],
               "condition": ""
-            },
-            {
-              "key": "cloud_region",
-              "operator": "=",
-              "value": "ap-south-1",
-              "keyLabel": "cloud_region",
-              "valueLabels": [
-                "ap-south-1"
-              ],
-              "condition": ""
             }
           ],
           "defaultKeys": [],
           "hide": "dontHide",
           "skipUrlSync": false,
           "allowCustomValue": true,
-          "enableGroupBy": false
+          "enableGroupBy": true
         },
         "labels": {
           "grafana.app/export-label": "prometheus-1"
-        }
-      },
-      {
-        "kind": "SwitchVariable",
-        "spec": {
-          "name": "show_business_metrics",
-          "current": "false",
-          "enabledValue": "true",
-          "disabledValue": "false",
-          "label": "Include business metrics",
-          "hide": "dontHide",
-          "skipUrlSync": false
         }
       }
     ],

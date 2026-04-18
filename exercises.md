@@ -46,7 +46,7 @@
   - Click **Dashboards → New → New dashboard**.
   - [*alt*] or use the `+` button in the top nav bar
 2. **Add your first tab — "Fleet Overview"**
-  - In the side toolbar, click **Add** → Group layout > **Tab**.
+  - In the side toolbar, click **Add** → Group layout > **Group into tabs**.
   - Name it **Fleet Overview**.
 3. **Add three more tabs**
   - Click the **+ New tab** button to the right of the existing tab.
@@ -57,27 +57,32 @@
 4. **Add starter panels to Fleet Overview**
   - On the **Fleet Overview** tab
   - Click **+ Add panel**
+  - Set Title: **Total RPS**.
   - Click **Configure**
+    - Use **Total RPS** saved query or enter it manually
     - Data source: `grafanacloud-<...>-prom`
     - Query A — Total RPS across all services:
       ```promql
       sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name="ditl-demo-prod"}[$__rate_interval]))
       ```
-    - Title: **Total RPS**.
     - Set visualization to **Stat**. 
-    - Calculation **Mean**
+      - _To set a panel option you can either scroll the right pane to find it or use the magnifying glass icon at the top right to search for it_
+      - Calculation **Mean** 
+      - Unit **requests/sec**
   - Repeat for **Error rate**:
+    - Title: **Error Rate**.
+    - Use **Error rate** saved query or enter it manually
     - Query:
       ```promql
       sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name="ditl-demo-prod", status_code="STATUS_CODE_ERROR"}[$__rate_interval]))
       /
       sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name="ditl-demo-prod"}[$__rate_interval]))
       ```
-    - Title: **Error Rate**.
     - Visualisation **Stat**. 
-    - Calculation **Mean** 
-    - Unit: `Percent (0.0-1.0)`.
+      - Calculation **Mean** 
+      - Unit: `Percent (0.0-1.0)`.
   - Repeat for **P95 Latency** panel:
+    - Use **Error rate** saved query or enter it manually
     ```promql
     histogram_quantile(0.95,
       sum by (le) (
@@ -87,9 +92,9 @@
     ```
   - Visualization to **Stat**.
     - Calculation **Mean** 
-    - Unit to **seconds**
+    - Unit to **seconds (s))**
 5. **Enable auto layout**
-  - With the tab selected, change the **Layout** options in the panel-editing sidebar.
+  - With the Overview tab selected, change the **Layout** options in the panel-editing sidebar.
     - Choose **Auto layout**. Watch your panels snap into an evenly distributed row.
   - *Pro tip*: because stat panels do no need to be huge, use a `narrow` width and `short` height to make sure all 3 fit in one row!
 6. **Add a panel to Logs**
@@ -97,16 +102,17 @@
   - Click **+ Add panel**
   - Click **Configure**
     - Data source: `grafanacloud-<...>-logs`
+    - Use **Logs** saved query or enter it manually
     - Query A :
       ```logql
       {namespace="ditl-demo-prod"}
       ```
     - Set line limit as `100` in query options
-    - Enable **Show timestamps** in Logs panel options
     - Set visualization to **Logs**. Title: **Most recent logs**.
-7. **Save the dashboard** as **Grot Plushies Monitoring Dashboard**.
+7. **Enable auto layout for Logs too**
+8. **Save the dashboard** as **Grot Plushies Monitoring Dashboard**.
 
-> **Checkpoint:** You should have a saved dashboard with 4 tabs. The Fleet Overview tab has 3 panels in an auto layout. The Logs tab has 1 panel.
+> **Checkpoint:** You should have a saved dashboard with 4 tabs. The Fleet Overview tab has 3 panels in an auto layout. The Logs tab has 1 panel filling all the space.
 
 </details>
 
@@ -116,7 +122,7 @@
 
 ## Task 2 — Make the Dashboard Interactive with Variables
 
-**Goal:** Add template variables so every panel can be filtered by cluster, namespace, and service with a single selection.
+**Goal:** Add template variables so every panel can be filtered by cluster, namespace, and service by your viewers.
 
 **Features practised:** Query variables, custom variables, variable chaining
 
@@ -128,10 +134,8 @@ _To add a dashboard level variable, click the **Add new element** button → Das
 1. **Add the `show_business_metrics` variable (toggle)**
    - **Type:** Switch
    - **Name:** `show_business_metrics`
-   - **Label:** Include business metrics
+   - **Label:** Display business metrics
    - **Values:** `true,false`
-
-_To add a section level variable, select the section (row/tab), in its side pane, click the Variables > **Add variable** button → select a type for it._
 
 2. **Add the `k8s_cluster_name` query variable**
    - In the **Fleet Overview** tab
@@ -140,7 +144,7 @@ _To add a section level variable, select the section (row/tab), in its side pane
    - **Label:** `Cluster`. 
    - Click **Open variable editor**
    ![Variable editor for cluster: Prometheus data source, Query type set to Label values, Label set to k8s_cluster_name](./img/cluster.png)
-   - Click **Preview** then **Close**.
+   - Click **Preview** to make sure you see `fbde35-cluster` then **Close**.
 
 3. **Add the `cloud_region` variable**
    - In the **Fleet Overview** tab
@@ -149,7 +153,9 @@ _To add a section level variable, select the section (row/tab), in its side pane
    - **Label:** `Region`. 
    - Click **Open variable editor**
    ![Variable editor for region: Prometheus data source, Query type set to Label values, Label set to cloud_region, with a label filter chaining k8s_cluster_name equals $cluster](./img/regions.png)
-   - Click **Preview** then **Close**.
+   - Click **Preview** to make sure you see `ap-south-1`, `eu-west-1` and `us-east-2` then **Close**.
+
+_To add a section level variable, select the section (row/tab), in its side pane, click the Variables > **Add variable** button → select a type for it._
 
 4. **Add the `service` variable**
    - In the **Logs** tab
@@ -165,9 +171,9 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 6. **Wire up your panels**
   - In the **Fleet Overview** tab:
-    - Group all 3 panels into a **row** and call it **Unfiltered**
-      - We will use that row later on
-    - Duplicate the row, call it **Filtered**
+    - Click the **Group panels > Group into a row** button to group all 3 panels into a **row** and call it **Unfiltered**
+      - ⚠️ _We will use that row later on_
+    - Duplicate the row (select the row and in the side pane use the copy/duplicate button), call the copy **Filtered**
     - Edit all 3 queries to add the filter. 
       - You can replace your queries with the corresponding filtered **saved query** (do not forget to map the correct template variables if needed!), 
       - or update them manually with:
@@ -205,11 +211,14 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 **Features practised:** Filters
 
+
+### Part A — Replace query variables with filters
+
 <details>
 <summary>Steps</summary>
 
 1. **Add a filter**
-  - Click the **Add new element** button → Dashboard controls > **Filter** → Filter
+  - Click the **Add new element** button → Dashboard controls > **Filter and Group by** 
   - **Name:** Filter
   - **Data source:** `grafanacloud-fbde35-prom`
 
@@ -223,14 +232,54 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 3. **Use filters only**
   - Remove the 2 query variables for cluster & region
-  - Delete the row that references them
+  - Delete the **Filtered** row that references them
   - To tidy up, you can also use **Ungroup rows** to remove the single row in your tab.
 
 > **Checkpoint:** Filters apply dashboard-wide and replace query variables. 
 
 </details>
 
+### Part B — Group by and Panel to Panel filtering
 
+<details>
+<summary>Steps</summary>
+
+1. **Create a new time series panel in the Service Deep Dive tab**
+  - Navigate to the **Service Deep Dive** tab.
+  - Click **+ Add panel**.
+  - Title: **Requests**.
+  - Click **Configure**
+    - Use the **Request** saved query or enter the query manually:
+      ```promql
+      sum(rate(traces_spanmetrics_calls_total{}[$__rate_interval]))
+      ```
+    - Visualization: **Time series**.
+
+2. **Try out the Group By option**
+  - In the top-right corner of the panel, notice the **Group by** dropdown 
+    - _Troubleshooting: if you do not have it, chances are you did not enabled group by on Filter_ 
+  - Select `http_status_code` — see how the panel now splits into one series per status code and the Filter updates.
+
+3. **Enable filterable fields via an override**
+  - Open the **Show only overrides** section in the panel editor.
+  - Click **Add field override** → **Fields with name matching regex**: `/.*/`
+  - Add property: **Standard options > Filterable** → enable it.
+
+  ![Override for all fields enabling the filterable option](./img/from-panel-filtering.png)
+
+4. **Use panel-to-panel filtering**
+  - Go Back to the dashboard
+  - Click on a series — notice you now get the option to **Filter for** or **Filter out** that specific value.
+
+  ![Clicking on a series shows filter on / filter out options](./img/filter-on-serie.png)
+
+5. **Filter out 200 status codes**
+  - Click on the `200` series and select **Filter out**.
+  - Notice how the filter is now applied **dashboard wide** — all panels using that prometheus data source will now exclude `200` return codes.
+
+> **Checkpoint:** In the Service Deep Dive tab, you have a time series panel with group-by support and panel-to-panel filtering enabled. Clicking a series lets you filter on or out specific values, and those filters propagate across the entire dashboard.
+
+</details>
 
 ---
 
@@ -239,6 +288,8 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 **Features practised:** Show/hide rules, section-level variables
 
+### Part A : Toggle Busniess metrics tab on and off with switch variable
+
 <details>
 <summary>Steps</summary>
 
@@ -246,7 +297,7 @@ _To add a section level variable, select the section (row/tab), in its side pane
   - Select the **Business Metrics** tab.
   - Add a show/hide rule:
     - **Tab visibility:** `Show`
-    - **Variable:** `Include business metrics`
+    - **Variable:** `Display business metrics`
     - **Operator:** `equals`
     - **Value:** `true`
   - The entire tab is now hidden unless the switch variable is toggled on.
@@ -260,11 +311,13 @@ _To add a section level variable, select the section (row/tab), in its side pane
 
 > **Checkpoint:** A business metrics tab is hidden unless we toggle a switch variable.
 
+</details>
 
-**Bonus Task**
+### Challenges
 
 You're done early? 
-Try adding another rule to the dashboard: only show a new **Database** tab if your viewer selected a productcatalog in the filter.
+
+Try adding another rule to the dashboard: only show a new **Database** tab if your viewer selected a `productcatalog` in the filter.
 You can add a panel using the saved query **Fetch data (SELECT)** to make it more real :).
 
 <details>
@@ -274,7 +327,8 @@ You can add a panel using the saved query **Fetch data (SELECT)** to make it mor
 
 </details>
 
-</details>
+You can also set up the **Logs** tab to only show if looking at a time range under 7 days.
+
 
 
 ---
@@ -287,19 +341,17 @@ You can add a panel using the saved query **Fetch data (SELECT)** to make it mor
 
 There are 2 exercises in that section, you can do both or pick one of them.
 
-<details>
-<summary>Steps</summary>
+
 
 ### Part A — Orders vs Sessions (Business Metrics)
-
+<details>
+<summary>Steps</summary>
 1. **Navigate to Tab 3 — Business Metrics**
-  - Make sure `include_business` is set to `true` so the tab is visible.
 
 2. **Create the panel**
    - Add a new panel. Title: **Orders vs Sessions**.
-   - Visualization: **Time series**.
    - Datasource: **Mixed**
-   - _Note: there are saved queries and even a library panel that you can use instead of the manual steps._
+   - _Note: there are saved queries that you can use instead of the manual steps._
    - **Query A — Orders:** Loki
      ```logql
      sum(count_over_time({job=~"ditl-demo-prod/checkoutservice.+"} |= "order placed successfully"[$__range]))
@@ -310,6 +362,7 @@ There are 2 exercises in that section, you can do both or pick one of them.
      sum(UniqueSessionCount{action_name="view-products"})
      ```
      - Options Legend: `Sessions`
+   - Visualization: **Time series**.
 
    ![Panel query editor showing two queries: Query A from Prometheus for UniqueSessionCount with legend Sessions, and Query B from Loki counting order-placed log lines with legend Orders](./img/sessions_orders.png)
 
@@ -330,17 +383,14 @@ There are 2 exercises in that section, you can do both or pick one of them.
 4. **Verify**
   - You should see two series on the same chart: Orders as a solid green line on the left axis, Sessions as a dashed purple line on the right axis.
   - The dual-axis layout lets you compare trends even when the absolute values are on different scales.
+</details>
+
 
 ### Part B — HTTP status code
-
-1. On the **Service Deep Dive** tab, add a new panel:
-  - Data source: `grafanacloud-prom`
-  - **Query** :
-    ```promql
-    sum by (http_status_code) (rate(traces_spanmetrics_calls_total{http_status_code!=""}[$__rate_interval]))
-    ```
-  - Visualization: **Time series** or **Bar chart**.
-  - Title: `HTTP Status Codes`.
+<details>
+<summary>Steps</summary>
+1. On the **Service Deep Dive** tab, **Request** panel`
+  - Make sure you group by `http_status_code`
 
 2. Open the **Overrides** section in the panel options.
 3. **Override 1 — make 2xx green:**
@@ -352,9 +402,9 @@ There are 2 exercises in that section, you can do both or pick one of them.
 5. **Override 3 — make 5xx red:**
   - Click **Add field override** → **Fields with name matching regex**: `5[0-9][0-9]`
   - Add property: **Standard options > Color scheme** → **Single color** → Red.
-6. **Save** the panel.
+6. **Save** the dashboard.
 
-> **Checkpoint:** Confirm that 2xx bars/lines are green, 4xx are orange and 5xx are red in the visualization.
+> **Checkpoint:** Confirm that 2xx lines are green, 4xx are orange and 5xx are red in the visualization.
 
 </details>
 
@@ -367,14 +417,13 @@ There are 2 exercises in that section, you can do both or pick one of them.
 **Goal:** Wire panels so clicking a data point takes you to the right context instantly — starting with a GitHub Issues tracker built from a CSV.
 
 **Features practised:** Field data links, dynamic link variables
+We want to visualise - and correlate - bug reports & customer support escalation from the same place. Let's add that data in!
 
 <details>
 <summary>Steps</summary>
 
-0. If you do not have one provisionned - add a **TestData** datasource in your instance
-
 1. **Create a "Github Stats" tab**
-   - In the current tab, click the **New tab** button.
+   - Click the **Add tab** button.
    - Name it **Github Stats**.
 
 2. **Add a Table panel**
@@ -385,7 +434,7 @@ There are 2 exercises in that section, you can do both or pick one of them.
    - Click **Configure** on the panel
    - Data source: **TestData**.
    - Scenario: **CSV Content**.
-   - Paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv) into the CSV field. It contains columns:
+   - Paste the contents of [`./resources/github_issues.csv`](./resources/github_issues.csv) into the CSV field. It contains columns:
      - `title`, `author`, `author_company`, `repo`, `number`, `closed`, `created_at`, `closed_at`, `updated_at`, `labels`, `assignees`
    - Select **Table** as visualisation
 
@@ -412,7 +461,7 @@ There are 2 exercises in that section, you can do both or pick one of them.
 
 > **Checkpoint:** The GitHub Stats tab has a table of open GitHub issues. The `number` and `repo` columns are hidden. Clicking any issue title opens the real GitHub issue in a new tab.
 
-**Bonus task**
+## Bonus task
 You're done early? 
 Make the labels display as pills.
 
@@ -431,26 +480,29 @@ Make the labels display as pills.
 
 ## Task 7 — Transformations
 
-**Goal:** Use transformations to improve on the Githu issues table
+**Goal:** Use transformations to improve on the Github issues table
 
 **Features practised:** Transformations - filter, organise, calculate, convert
+
+> **Important:** Transformations are applied *before* overrides. If you use a transformation to remove a field (e.g. via **Organise fields**), any data link that references that field with `${__data.fields.<name>}` will resolve to an empty string — because the field no longer exists by the time overrides run. If you need a field available for a data link but don't want it visible in the table, use the **Hide in table** override (as we did in Task 6, step 5) instead of removing it with a transformation.
 
 <details>
 <summary>Steps</summary>
 
-> **Important:** Transformations are applied *before* overrides. If you use a transformation to remove a field (e.g. via **Organise fields**), any data link that references that field with `${__data.fields.<name>}` will resolve to an empty string — because the field no longer exists by the time overrides run. If you need a field available for a data link but don't want it visible in the table, use the **Hide in table** override (as we did in Task 6, step 5) instead of removing it with a transformation.
-
 1. **Filter data by value**
-  - Only show issues that are not closed
+  - Only show issues that are not closed (_hint_: closed is a tinyint type, use `0` or `1` for comparison)
 
 2. **Convert field type**
   - Make times readable by converting them to `Time`
 
 3. **Organise fields by name**
-  - Hide `author_company`, `closed_at` and `assignees`
+  - Hide `author_company`, `closed`, `closed_at` and `assignees`
   - Rename columns to be easier to read (remove underscores)
 
 ![Solution for transformations](./img/transformations.png)
+
+
+---
 
 ### Bonus task / Challenge
 You're done early? 
@@ -480,11 +532,11 @@ You're done early?
 
 **Features practised:** Transformations, SQL Expressions, cross-query JOINs
 
-<details>
-<summary>Steps</summary>
+
 
 ### Part A — Replace Task 7 transformations with SQL
-
+<details>
+<summary>Steps</summary>
 Duplicate the panel from Task 7 and replace all transformations with a single SQL expression.
 
 - Remove all transformations (or hide them with eye icon) 
@@ -496,6 +548,8 @@ Duplicate the panel from Task 7 and replace all transformations with a single SQ
 SELECT
   title,
   author,
+  repo,
+  number,
   DATE_FORMAT(from_unixtime(created_at / 1000), '%Y-%m-%d %H:%i:%s') AS `created at`,
   labels
 FROM A
@@ -504,16 +558,19 @@ WHERE closed = false
 
 > **Checkpoint:** The table shows only open issues with a human-readable date, same as before — no transformation steps needed.
 
+</details>
+
 ---
 
 ### Part B — JOIN: Bug vs Feature ratio per repo
-
-**Goal:** Use subqueries and a JOIN inside a single SQL expression to compare bug and feature request volume across repos.
+<details>
+<summary>Steps</summary>
+**Goal:** Use a single SQL expression to compare bug, feature requests and customer escalations volume across repos.
 
 1. **Add a new panel on the GitHub Stats tab**
-   - Title: **Bug vs Feature Requests by Repository**
+   - Title: **Type of issues by Repository**
    - Visualization: **Table**
-   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
+   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/github_issues.csv`](./resources/github_issues.csv)
 
 2. **Add a SQL Expression** (Query B)
    - Hide query A from the visualization
@@ -531,26 +588,32 @@ WHERE
 GROUP BY repo
 ```
 
-3. **Add a unit override on `bug_pct`**
-   - Match: **Fields with name** `bug_pct`
-   - Add property: **Standard options > Unit** → **Percent (0-100)**
+3. **Add a unit override on anything with `%`**
+   - Match: **Fields matching regex** `/%/`
+   - Add property: **Standard options > Unit** → **Percent (0-1)**
 
 4. **Save** the panel.
 
 > **Checkpoint:** The table shows each repo with its raw bug and feature request counts, plus a percentage showing what share of labelled issues are bugs. `grafana/scenes` and `grafana/grafana` should both appear.
 
+</details>
+
 ---
 
 ### Challenge: Bug hunter leaderboard
+
 You're done early? Complete this challenge!
+
+<details>
+<summary>Steps</summary>
 Grot plushies is shipping a new, improved version of their payment service. To make sure evrything is working as expected, you are running a bug bash: every employee is encouraged to try things out and report bugs. 
 You want to give a public shoutout to the top bug hunters at the next group meeting.
 
-_When you are done, submit your answers in [this form](https://docs.google.com/forms/d/e/1FAIpQLSfO-wiPqML91LuNJffZ5VIfH7GbwbNodoyk5vAPIMt3V6rWiA/viewform) - You'll get a prize if you are the first to respond!!_
+_When you are done, submit your answers in <a href="https://docs.google.com/forms/d/e/1FAIpQLSfO-wiPqML91LuNJffZ5VIfH7GbwbNodoyk5vAPIMt3V6rWiA/viewform" target="_blank">this form</a> - You'll get a prize if you are the first to respond!!_
 _**Note:** You can submit the form several time. Feel free to answer the first question as soon as you can and spend time thinking about the second one afterwards._
 
-**Goal:** Use `RANK()` and `SUM() OVER ()` to build a ranked leaderboard 
-  - Who are the top 3  bug hunters?
+**Goal:** Use `RANK()` and `SUM() OVER ()` to build a ranked leaderboard for the bug bash last week (**April 13rd to April 17th**)
+  - Who are the top 3 bug hunters?
   - What percentage of the repo have they contributed to?
 
 <details>
@@ -559,7 +622,7 @@ _**Note:** You can submit the form several time. Feel free to answer the first q
 1. **Add a new panel on the GitHub Stats tab**
    - Title: **Top Issue Reporters**
    - Visualization: **Table**
-   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/last_year_oss_issues.csv`](./resources/last_year_oss_issues.csv)
+   - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/github_issues.csv`](./resources/github_issues.csv)
 
 2. **Add a SQL Expression** (Query B), hide query A:
 
@@ -582,6 +645,8 @@ FROM (
 ORDER BY bugs_reported DESC
 LIMIT 20
 ```
+
+**_Note_**: The use of `$__to` and `$__from` make sure the query filters by the time selected in the time picker. You could also hard code the dates there instead
 
 3. **Add overrides to style the leaderboard**
    - **`rank` column:** Cell type → **Colored text**, thresholds: gold (212,175,55) < 2, silver (192,192,192) 2, bronze (205,127,50) 3, transparent otherwise. 

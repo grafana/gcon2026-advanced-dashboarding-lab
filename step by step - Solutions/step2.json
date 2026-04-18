@@ -2,9 +2,9 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "fd6drq8",
-    "generation": 9,
-    "creationTimestamp": "2026-04-12T10:35:14Z",
+    "name": "yaddb6z",
+    "generation": 3,
+    "creationTimestamp": "2026-04-18T17:51:36Z",
     "labels": {},
     "annotations": {}
   },
@@ -53,8 +53,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval]))",
-                        "legendFormat": "__auto",
+                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval]))",
                         "range": true
                       },
                       "labels": {
@@ -73,17 +72,17 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
                 "reduceOptions": {
                   "calcs": [
-                    "lastNotNull"
+                    "mean"
                   ],
                   "fields": "",
                   "values": false
@@ -94,6 +93,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "reqps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -137,7 +137,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\", status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval]))\n/\nsum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval]))",
+                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval]))\n/\nsum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval]))",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -157,11 +157,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -206,7 +206,7 @@
         "kind": "Panel",
         "spec": {
           "id": 3,
-          "title": "P95 latency",
+          "title": "P95 Latency",
           "description": "",
           "links": [],
           "data": {
@@ -222,7 +222,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval])\n  )\n)",
+                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval])\n  )\n)",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -242,11 +242,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -308,7 +308,7 @@
                       "spec": {
                         "direction": "backward",
                         "editorMode": "code",
-                        "expr": "{namespace=\"ditl-demo-prod\", container=\"$service\"}",
+                        "expr": "{namespace=\"ditl-demo-prod\", container=\"${service}\"}",
                         "maxLines": 100,
                         "queryType": "range"
                       },
@@ -328,7 +328,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "logs",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "dedupStrategy": "none",
@@ -337,9 +337,9 @@
                 "prettifyLogMessage": true,
                 "showControls": false,
                 "showFieldSelector": false,
-                "showLevel": false,
+                "showLevel": true,
                 "showLogAttributes": true,
-                "showTime": true,
+                "showTime": false,
                 "sortOrder": "Descending",
                 "timestampResolution": "ms",
                 "unwrappedColumns": false,
@@ -373,7 +373,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval]))",
+                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval]))",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -393,11 +393,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -414,6 +414,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "reqps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -457,7 +458,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval]))\n/\nsum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\"}[$__rate_interval]))",
+                        "expr": "sum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\", status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval]))\n/\nsum(rate(traces_spanmetrics_calls_total{k8s_namespace_name=\"ditl-demo-prod\", cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval]))",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -477,11 +478,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -513,8 +514,7 @@
                     ]
                   },
                   "color": {
-                    "mode": "thresholds",
-                    "fixedColor": "#ad46ff"
+                    "mode": "palette-classic"
                   }
                 },
                 "overrides": []
@@ -527,7 +527,7 @@
         "kind": "Panel",
         "spec": {
           "id": 7,
-          "title": "P95 latency",
+          "title": "P95 Latency",
           "description": "",
           "links": [],
           "data": {
@@ -543,7 +543,7 @@
                       "version": "v0",
                       "spec": {
                         "editorMode": "code",
-                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{}[$__rate_interval])\n  )\n)",
+                        "expr": "histogram_quantile(0.95,\n  sum by (le) (\n    rate(traces_spanmetrics_latency_bucket{cloud_region=\"${cloud_region}\",k8s_cluster_name=\"${k8s_cluster_name}\"}[$__rate_interval])\n  )\n)",
                         "legendFormat": "__auto",
                         "range": true
                       },
@@ -563,11 +563,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.1.0-24251769778",
+            "version": "13.1.0-24556818486",
             "spec": {
               "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "percentChangeColorMode": "standard",
@@ -599,8 +599,7 @@
                     ]
                   },
                   "color": {
-                    "mode": "thresholds",
-                    "fixedColor": "#ad46ff"
+                    "mode": "palette-classic"
                   }
                 },
                 "overrides": []
@@ -625,7 +624,7 @@
                     {
                       "kind": "RowsLayoutRow",
                       "spec": {
-                        "title": "Filtered",
+                        "title": "Unfiltered",
                         "collapse": false,
                         "layout": {
                           "kind": "AutoGridLayout",
@@ -669,7 +668,7 @@
                     {
                       "kind": "RowsLayoutRow",
                       "spec": {
-                        "title": "Unfiltered",
+                        "title": "Filtered",
                         "collapse": false,
                         "layout": {
                           "kind": "AutoGridLayout",
@@ -775,8 +774,8 @@
                     "definition": "",
                     "options": [],
                     "multi": true,
-                    "includeAll": true,
-                    "allowCustomValue": false
+                    "includeAll": false,
+                    "allowCustomValue": true
                   }
                 }
               ]
@@ -798,18 +797,6 @@
             "kind": "TabsLayoutTab",
             "spec": {
               "title": "Business Metrics",
-              "layout": {
-                "kind": "GridLayout",
-                "spec": {
-                  "items": []
-                }
-              }
-            }
-          },
-          {
-            "kind": "TabsLayoutTab",
-            "spec": {
-              "title": "Bug Reports & Support Escalations",
               "layout": {
                 "kind": "GridLayout",
                 "spec": {
@@ -845,8 +832,20 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Step 2: Template variables",
+    "title": "Step 2 : Template variables",
     "variables": [
+      {
+        "kind": "SwitchVariable",
+        "spec": {
+          "name": "show_business_metrics",
+          "current": "false",
+          "enabledValue": "true",
+          "disabledValue": "false",
+          "label": "Display business metrics",
+          "hide": "dontHide",
+          "skipUrlSync": false
+        }
+      },
       {
         "kind": "QueryVariable",
         "spec": {
@@ -915,18 +914,6 @@
           "multi": false,
           "includeAll": false,
           "allowCustomValue": true
-        }
-      },
-      {
-        "kind": "SwitchVariable",
-        "spec": {
-          "name": "show_business_metrics",
-          "current": "false",
-          "enabledValue": "true",
-          "disabledValue": "false",
-          "label": "Include business metrics",
-          "hide": "dontHide",
-          "skipUrlSync": false
         }
       }
     ],

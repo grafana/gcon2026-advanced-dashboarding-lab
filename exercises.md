@@ -508,17 +508,25 @@ Make the labels display as pills.
 You're done early? 
  - duplicate the panels and name the copy **Closed bugs**
  - filter the table for bugs only
-  <details>
-  <summary>View solution</summary>
-  ![Filter for bugs: labels containing `bug` substring](./img/filter-bugs.png)
-  </details>
+<details>
+<summary>View solution</summary>
+
+![Filter for bugs: labels containing `bug` substring](./img/filter-bugs.png)
+
+</details>
 
  - switch to only showing closed issues and calculate the time the issue was open for
-  <details>
-  <summary>View solution</summary>
-  Do not forget an override to change the unit to **days**
-  ![Add field from calculation times 2, to get the milisecond between closed and open time, then to convert it to number of days](./img/calc_time_open.png)
-  </details>
+<details>
+<summary>View solution</summary>
+
+Do not forget an override to change the unit to **days**
+
+![Add field from calculation times 2, to get the milisecond between closed and open time, then to convert it to number of days](./img/calc_time_open.png)
+
+</details>
+
+_When you are done, submit your answers in <a href="https://docs.google.com/forms/d/e/1FAIpQLSfO-wiPqML91LuNJffZ5VIfH7GbwbNodoyk5vAPIMt3V6rWiA/viewform" target="_blank">this form</a> - You'll get a prize if you are the first to respond!!_
+_**Note:** You can submit the form several time. Feel free to answer the first question as soon as you can and spend time thinking about the second one afterwards._
 
 </details>
 

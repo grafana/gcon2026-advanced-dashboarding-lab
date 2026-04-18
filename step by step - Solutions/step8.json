@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "yanlfkb",
-    "generation": 2,
+    "generation": 3,
     "creationTimestamp": "2026-04-18T22:13:08Z",
     "labels": {},
     "annotations": {}
@@ -702,12 +702,30 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "table",
+            "group": "barchart",
             "version": "13.1.0-24556818486",
             "spec": {
               "options": {
-                "cellHeight": "sm",
-                "showHeader": true
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "orientation": "auto",
+                "showValue": "never",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
               },
               "fieldConfig": {
                 "defaults": {
@@ -724,15 +742,29 @@
                       }
                     ]
                   },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
                   "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
                     },
-                    "footer": {
-                      "reducers": []
+                    "lineWidth": 1,
+                    "scaleDistribution": {
+                      "type": "linear"
                     },
-                    "inspect": false
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
                   }
                 },
                 "overrides": [
@@ -1711,45 +1743,93 @@
             "spec": {
               "title": "Github Stats",
               "layout": {
-                "kind": "AutoGridLayout",
+                "kind": "RowsLayout",
                 "spec": {
-                  "maxColumnCount": 1,
-                  "columnWidthMode": "standard",
-                  "rowHeightMode": "standard",
-                  "items": [
+                  "rows": [
                     {
-                      "kind": "AutoGridLayoutItem",
+                      "kind": "RowsLayoutRow",
                       "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-11"
+                        "title": "Transform vs SQL",
+                        "collapse": true,
+                        "layout": {
+                          "kind": "AutoGridLayout",
+                          "spec": {
+                            "maxColumnCount": 1,
+                            "columnWidthMode": "standard",
+                            "rowHeightMode": "standard",
+                            "items": [
+                              {
+                                "kind": "AutoGridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-11"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "AutoGridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-12"
+                                  }
+                                }
+                              }
+                            ]
+                          }
                         }
                       }
                     },
                     {
-                      "kind": "AutoGridLayoutItem",
+                      "kind": "RowsLayoutRow",
                       "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-12"
+                        "title": "Open Issue type by repo",
+                        "collapse": false,
+                        "layout": {
+                          "kind": "AutoGridLayout",
+                          "spec": {
+                            "maxColumnCount": 3,
+                            "columnWidthMode": "standard",
+                            "rowHeightMode": "standard",
+                            "items": [
+                              {
+                                "kind": "AutoGridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-13"
+                                  }
+                                }
+                              }
+                            ]
+                          }
                         }
                       }
                     },
                     {
-                      "kind": "AutoGridLayoutItem",
+                      "kind": "RowsLayoutRow",
                       "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-13"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "AutoGridLayoutItem",
-                      "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-14"
+                        "title": "Challenge",
+                        "collapse": true,
+                        "layout": {
+                          "kind": "AutoGridLayout",
+                          "spec": {
+                            "maxColumnCount": 3,
+                            "columnWidthMode": "standard",
+                            "rowHeightMode": "standard",
+                            "items": [
+                              {
+                                "kind": "AutoGridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-14"
+                                  }
+                                }
+                              }
+                            ]
+                          }
                         }
                       }
                     }

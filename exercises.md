@@ -577,7 +577,7 @@ WHERE closed = false
 
 1. **Add a new panel on the GitHub Stats tab**
    - Title: **Type of issues by Repository**
-   - Visualization: **Table**
+   - Visualization: **Bar chart**
    - Data source: **TestData** → Scenario: **CSV Content** → paste the contents of [`./resources/github_issues.csv`](./resources/github_issues.csv)
 
 2. **Add a SQL Expression** (Query B)
@@ -602,7 +602,7 @@ GROUP BY repo
 
 4. **Save** the panel.
 
-> **Checkpoint:** The table shows each repo with its raw bug and feature request counts, plus a percentage showing what share of labelled issues are bugs. `grafana/scenes` and `grafana/grafana` should both appear.
+> **Checkpoint:** The bar chart shows, for each repo, its bug, feature request & customer support issues percentages.
 
 </details>
 

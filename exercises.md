@@ -525,7 +525,7 @@ Do not forget an override to change the unit to **days**
 
 </details>
 
-_When you are done, submit your answers in <a href="https://docs.google.com/forms/d/e/1FAIpQLSfO-wiPqML91LuNJffZ5VIfH7GbwbNodoyk5vAPIMt3V6rWiA/viewform" target="_blank">this form</a> - You'll get a prize if you are the first to respond!!_
+_When you are done, submit your answers in <a href="https://docs.google.com/forms/d/e/1FAIpQLScJMpVAv3919Z2sFhvJrMZxPpveV4GhGTG-4waIqL2F4Otp0w/viewform?usp=dialogm" target="_blank">this form</a> - You'll get a prize if you are the first to respond!!_
 _**Note:** You can submit the form several time. Feel free to answer the first question as soon as you can and spend time thinking about the second one afterwards._
 
 </details>

@@ -82,7 +82,7 @@
       - Calculation **Mean** 
       - Unit: `Percent (0.0-1.0)`.
   - Repeat for **P95 Latency** panel:
-    - Use **Error rate** saved query or enter it manually
+    - Use **P95 Latency** saved query or enter it manually
     ```promql
     histogram_quantile(0.95,
       sum by (le) (
